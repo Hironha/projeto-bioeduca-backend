@@ -1,0 +1,33 @@
+{
+	"compilerOptions": {
+		"target": "ES5",
+		"lib": ["ES7", "DOM"],
+		"module": "CommonJS",
+		"rootDir": "./src",
+		"baseUrl": "./",
+		"resolveJsonModule": true,
+		"moduleResolution": "Node",
+		"allowUnreachableCode": false,
+		"allowJs": true,
+		"outDir": "./dist",
+		"removeComments": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": true,
+		"strictPropertyInitialization": false,
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"paths": {
+			"@presentation/*": ["./src/1-presentation/*"],
+			"@domain/*": ["./src/2-domain/*"],
+			"@business/*": ["./src/3-business/*"],
+			"@data/*": ["./src/4-data/*"],
+			"@utils/*": ["./src/utils/*"]
+		}
+	},
+	"exclude": ["./dist/**/*", "./babel.config.js"]
+}
