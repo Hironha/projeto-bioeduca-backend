@@ -2,11 +2,14 @@ import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
 import { PlantInformationValidations } from "@data/interfaces/entities/plantInformation";
-import { type ICreatePlantInformationInput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
+import type {
+	ICreatePlantInformationDTOInput,
+	ICreatePlantInformationDTOOutput,
+} from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
-	extends Validator<ICreatePlantInformationInput>
-	implements ICreatePlantInformationInput
+	extends Validator<ICreatePlantInformationDTOInput>
+	implements ICreatePlantInformationDTOInput
 {
 	@IsEnum(PlantInformationValidations)
 	@IsNotEmpty()
@@ -20,11 +23,11 @@ export class CreatePlantInformationDTO
 	@IsNotEmpty()
 	description: string;
 
-	constructor(input: ICreatePlantInformationInput) {
+	constructor(input: ICreatePlantInformationDTOInput) {
 		super(input);
 	}
 
-	export(): ICreatePlantInformationInput {
+	export(): ICreatePlantInformationDTOOutput {
 		return {
 			field_name: this.field_name,
 			validation: this.validation,

@@ -1,1 +1,4 @@
-export interface IListPaginatedInputEntity {}
+export interface IListPaginatedInputEntity {
+	perPage: number;
+	page: number;
+}

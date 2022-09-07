@@ -37,7 +37,7 @@ export class PlantInformationRepository {
 		return createdPlantInformation;
 	}
 
-	async list(entity: ListPaginatedInputEntity) {
+	async list(_entity: ListPaginatedInputEntity) {
 		// const entityData = entity.export();
 		const snapshot = await db.collection(this.plantInformationsCollection).get();
 		const plantInformations: PlantInformationModel[] = [];
