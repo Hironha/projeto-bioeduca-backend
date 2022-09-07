@@ -6,8 +6,8 @@ import { type ListPaginatedInputEntity } from "@data/entities/listPaginatedInput
 import { type StoredPlantModel } from "@data/interfaces/models/plant";
 
 export class PlantRepository {
-	private readonly colletionName = "plant";
-	private readonly storageName = "plant";
+	private readonly colletionName = "plants";
+	private readonly storageName = "plants";
 
 	constructor() {}
 

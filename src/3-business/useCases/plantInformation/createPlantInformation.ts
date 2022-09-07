@@ -58,7 +58,10 @@ export class CreatePlantInformationUseCase {
 			return new Right(createdPlantInformation);
 		} catch (err) {
 			if (err instanceof Left<Exception>) return err;
-			return new Left(new Exception(exceptions.dbError));
+			if ((err as Exception)?.code === "duplicated-field_name") {
+				return new Left(exceptions.duplicatedFieldName);
+			}
+			return new Left(exceptions.dbError);
 		}
 	}
 }

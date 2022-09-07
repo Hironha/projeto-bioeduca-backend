@@ -13,6 +13,14 @@ class CreatePlantInformationExceptionsFactory {
 		});
 	}
 
+	get duplicatedFieldName() {
+		return new Exception({
+			code: "CPI-003",
+			httpStatus: 500,
+			message: "Could not create plant information because field_name is already used."
+		})
+	}
+
 	get dbError() {
 		return new Exception({
 			code: "CPI-010",

@@ -13,7 +13,7 @@ export type StoredPlantModel = Omit<IPlantModel, "fields" | 'id' | 'images'> & {
 };
 
 export type FormattedPlantModel = Omit<IPlantModel, "fields"> & {
-	plant_informations: {
+	additional_informations: {
 		[field_name: string]: any;
 	};
 };

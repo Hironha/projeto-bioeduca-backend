@@ -6,24 +6,40 @@ import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 import { type IPlantInformationModel } from "@data/interfaces/models/plantInformation";
 
 export class PlantInformationRepository {
-	private readonly collection = "plant-informations";
+	private readonly plantInformationsCollection = "plant-informations";
 
 	constructor() {}
 
 	async create(entity: PlantInformationEntity) {
 		const entityData = entity.export();
-		const createdDocRef = await db.collection(this.collection).add(entityData);
-		const createdPlantInformation = new PlantInformationModel({
-			...entityData,
-			id: createdDocRef.id,
+		db.collection(this.plantInformationsCollection);
+
+		const newDocRef = db.collection(this.plantInformationsCollection).doc();
+		await new Promise((resolve, reject) => {
+			db.runTransaction(async (transaction) => {
+				const docRef = await transaction.get(
+					db
+						.collection(this.plantInformationsCollection)
+						.where("field_name", "==", entityData.field_name)
+						.limit(1)
+				);
+				if (docRef.empty) {
+					transaction.create(newDocRef, entityData);
+					resolve(true);
+				} else {
+					reject({ code: "duplicated-field_name" });
+				}
+			});
 		});
+
+		const createdPlantInformation = new PlantInformationModel({ ...entityData, id: newDocRef.id });
 
 		return createdPlantInformation;
 	}
 
 	async list(entity: ListPaginatedInputEntity) {
 		// const entityData = entity.export();
-		const snapshot = await db.collection(this.collection).get();
+		const snapshot = await db.collection(this.plantInformationsCollection).get();
 		const plantInformations: PlantInformationModel[] = [];
 		snapshot.docs.forEach((doc) => {
 			const id = doc.id;

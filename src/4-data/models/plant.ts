@@ -35,7 +35,7 @@ export class PlantModel implements IPlantModel {
 			images: this.images,
 			updated_at: this.updated_at,
 			created_at: this.created_at,
-			plant_informations: {
+			additional_informations: {
 				...this.fields,
 			},
 		};
