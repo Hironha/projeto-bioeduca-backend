@@ -17,12 +17,13 @@ export class ListPlantsController implements Controller {
 		next: NextFunction
 	): Promise<void> {
 		try {
-			const input = req.params as any;
+			const input = req.query as any
 
 			const dto = new ListPlantsDTO(input);
 			const listPlantsOutput = await this.listPlantsUseCase.exec(dto);
 			res.status(200).json(listPlantsOutput);
 		} catch (err) {
+			console.error(err)
 			const exception = err as Exception;
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}

@@ -1,18 +1,20 @@
 import { type FormattedPlantModel } from "@data/interfaces/models/plant";
-import { type IListPaginatedInputEntity } from "@data/interfaces/entities/listPaginatedInput";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 export interface IListPlantsDTOInput {
+	lastKey?: string;
 	perPage: string;
-	page: string;
 }
 
 export interface IListPlantsDTOOutput {
+	lastKey?: number;
 	perPage: number;
-	page: number;
 }
 
-export interface IListPlantsInput extends IListPaginatedInputEntity {}
+export interface IListPlantsInput extends IListPaginatedEntityInput {}
 
 export interface IListPlantsOutput {
+	lastKey?: string;
+	hasMore: boolean
 	data: FormattedPlantModel[];
 }

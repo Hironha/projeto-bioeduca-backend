@@ -11,16 +11,27 @@ export class PlantRepository {
 
 	constructor() {}
 
-	async list(_listEntity: ListPaginatedInputEntity) {
-		const snapshot = await db.collection(this.colletionName).get();
-		const plantModels: PlantModel[] = snapshot.docs.map((plantDoc) => {
+	async list(listEntity: ListPaginatedInputEntity) {
+		const listEntityData = listEntity.export();
+		const perPage = listEntityData.perPage + 1;
+		const query = db.collection(this.colletionName).limit(perPage).orderBy("created_at", "desc");
+		const snapshot = await (async () => {
+			if (listEntityData.lastKey) return await query.startAfter(listEntityData.lastKey).get();
+			return await query.get();
+		})();
+
+		const selectedPlants = snapshot.docs.slice(0, listEntityData.perPage);
+		const plantModels: PlantModel[] = selectedPlants.map((plantDoc) => {
 			const id = plantDoc.id;
 			const { created_at, updated_at, ...dynamicFields } = plantDoc.data() as StoredPlantModel;
 			const plant = new PlantModel({ id, created_at, updated_at, fields: dynamicFields });
 			return plant;
 		});
 
-		return plantModels;
+		return {
+			hasMore: snapshot.size === plantModels.length + 1,
+			plantModels,
+		};
 	}
 
 	async create(plantEntity: PlantEntity) {

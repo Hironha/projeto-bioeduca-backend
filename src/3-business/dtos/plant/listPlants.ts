@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumberString } from "class-validator";
+import { IsNotEmpty, IsNumberString, IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
 import type {
@@ -7,11 +7,11 @@ import type {
 } from "@business/interfaces/ios/plant/listPlants";
 
 export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements IListPlantsDTOInput {
-	@IsNumberString({ min: 0 })
-	@IsNotEmpty()
-	page: string;
+	@IsString()
+	@IsOptional()
+	lastKey?: string;
 
-	@IsNumberString({ min: 0 })
+	@IsNumberString({ min: 1 })
 	@IsNotEmpty()
 	perPage: string;
 
@@ -21,7 +21,7 @@ export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements ILi
 
 	export(): IListPlantsDTOOutput {
 		return {
-			page: parseInt(this.page),
+			lastKey: this.lastKey ? parseInt(this.lastKey) : undefined,
 			perPage: parseInt(this.perPage),
 		};
 	}

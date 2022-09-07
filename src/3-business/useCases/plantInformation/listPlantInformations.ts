@@ -37,8 +37,7 @@ export class ListPlantInformationsUseCase {
 	): Promise<Either<Exception, ListPaginatedInputEntity>> {
 		try {
 			await dto.validate();
-			const input = dto.export();
-			const entity = new ListPaginatedInputEntity(input);
+			const entity = new ListPaginatedInputEntity({ perPage: 10000 });
 			return new Right(entity);
 		} catch (err) {
 			const message = (err as Error).message;

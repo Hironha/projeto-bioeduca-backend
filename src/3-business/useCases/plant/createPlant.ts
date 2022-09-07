@@ -77,7 +77,7 @@ export class CreatePlantUseCase {
 
 	private async getAllPlantInformations(): Promise<Either<Exception, PlantInformationModel[]>> {
 		try {
-			const listPaginatedEntity = new ListPaginatedInputEntity({});
+			const listPaginatedEntity = new ListPaginatedInputEntity({ perPage: 100000 });
 			const storedFields = await this.plantInformationRepository.list(listPaginatedEntity);
 			return new Right(storedFields);
 		} catch (err) {

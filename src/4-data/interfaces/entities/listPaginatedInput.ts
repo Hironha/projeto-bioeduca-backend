@@ -1,4 +1,4 @@
-export interface IListPaginatedInputEntity {
+export interface IListPaginatedEntityInput {
 	perPage: number;
-	page: number;
+	lastKey?: number;
 }

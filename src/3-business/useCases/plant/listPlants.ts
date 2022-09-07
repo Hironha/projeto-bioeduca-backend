@@ -21,11 +21,13 @@ export class ListPlantsUseCase {
 
 			const listPlantsFlow = await this.listPlants(listPlantsEntity);
 			if (listPlantsFlow.isLeft()) throw listPlantsFlow.export();
-			const plantModels = listPlantsFlow.export();
+			const { hasMore, plantModels } = listPlantsFlow.export();
 
 			const formattedPlantModels = this.formatPlantModels(plantModels);
-
+			const lastPlantModel = formattedPlantModels.at(-1);
 			return {
+				hasMore,
+				lastKey: lastPlantModel ? lastPlantModel.created_at.toString() : undefined,
 				data: formattedPlantModels,
 			};
 		} catch (err) {
@@ -53,10 +55,10 @@ export class ListPlantsUseCase {
 
 	private async listPlants(
 		listEntity: ListPaginatedInputEntity
-	): Promise<Either<Exception, PlantModel[]>> {
+	): Promise<Either<Exception, { hasMore: boolean; plantModels: PlantModel[] }>> {
 		try {
-			const plantModels = await this.plantRepository.list(listEntity);
-			return new Right(plantModels);
+			const { hasMore, plantModels } = await this.plantRepository.list(listEntity);
+			return new Right({ hasMore, plantModels });
 		} catch (err) {
 			if (err instanceof Exception) return new Left(err);
 			return new Left(exceptions.dbError);

@@ -1,22 +1,18 @@
-import { type IListPaginatedInputEntity } from "@data/interfaces/entities/listPaginatedInput";
+import type { IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
-export class ListPaginatedInputEntity implements IListPaginatedInputEntity {
+export class ListPaginatedInputEntity implements IListPaginatedEntityInput {
 	perPage: number;
-	page: number;
+	lastKey?: number;
 
-	constructor({ page, perPage }: IListPaginatedInputEntity) {
-		this.page = page;
+	constructor({ lastKey, perPage }: IListPaginatedEntityInput) {
+		this.lastKey = lastKey;
 		this.perPage = perPage;
 	}
 
-	export(): IListPaginatedInputEntity {
+	export(): IListPaginatedEntityInput {
 		return {
-			page: this.page,
+			lastKey: this.lastKey,
 			perPage: this.perPage,
 		};
-	}
-
-	get skipAmount() {
-		return this.page * this.perPage;
 	}
 }
