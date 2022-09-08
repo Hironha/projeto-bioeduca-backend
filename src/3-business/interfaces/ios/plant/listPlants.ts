@@ -7,7 +7,7 @@ export interface IListPlantsDTOInput {
 }
 
 export interface IListPlantsDTOOutput {
-	lastKey?: number;
+	lastKey?: string;
 	perPage: number;
 }
 

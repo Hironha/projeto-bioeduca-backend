@@ -11,25 +11,37 @@ export class PlantRepository {
 
 	constructor() {}
 
+	async consultPlantById(id: string) {
+		const doc = await db.collection(this.colletionName).doc(id).get();
+		if (!doc.exists) return undefined;
+		const plantData = doc.data() as StoredPlantModel;
+		return PlantModel.fromStore({ ...plantData, id: doc.id });
+	}
+
 	async list(listEntity: ListPaginatedInputEntity) {
-		const listEntityData = listEntity.export();
-		const perPage = listEntityData.perPage + 1;
-		const query = db.collection(this.colletionName).limit(perPage).orderBy("created_at", "desc");
-		const snapshot = await (async () => {
-			if (listEntityData.lastKey) return await query.startAfter(listEntityData.lastKey).get();
-			return await query.get();
+		const lastSentPlantSnapshot = await (async (plantId: string | undefined) => {
+			if (!plantId) return undefined;
+			return await db.collection(this.colletionName).doc(plantId).get();
+		})(listEntity.lastKey);
+
+		const listQuery = db
+			.collection(this.colletionName)
+			.limit(listEntity.perPage + 1)
+			.orderBy("created_at", "desc");
+
+		const listSnapshot = await (async () => {
+			if (lastSentPlantSnapshot) return await listQuery.startAfter(lastSentPlantSnapshot).get();
+			return await listQuery.get();
 		})();
 
-		const selectedPlants = snapshot.docs.slice(0, listEntityData.perPage);
-		const plantModels: PlantModel[] = selectedPlants.map((plantDoc) => {
-			const id = plantDoc.id;
-			const { created_at, updated_at, ...dynamicFields } = plantDoc.data() as StoredPlantModel;
-			const plant = new PlantModel({ id, created_at, updated_at, fields: dynamicFields });
-			return plant;
+		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
+		const plantModels: PlantModel[] = queriedSnapshots.map((plantDoc) => {
+			const storedPlantData = plantDoc.data() as StoredPlantModel;
+			return PlantModel.fromStore({ ...storedPlantData, id: plantDoc.id });
 		});
 
 		return {
-			hasMore: snapshot.size === plantModels.length + 1,
+			hasMore: listSnapshot.size > plantModels.length,
 			plantModels,
 		};
 	}

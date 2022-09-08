@@ -2,6 +2,7 @@ import type {
 	FormattedPlantModel,
 	IPlantModel,
 	PlantModelFields,
+	StoredPlantModel,
 } from "@data/interfaces/models/plant";
 
 export class PlantModel implements IPlantModel {
@@ -17,6 +18,11 @@ export class PlantModel implements IPlantModel {
 		this.fields = fields;
 		this.created_at = created_at;
 		this.updated_at = updated_at;
+	}
+
+	static fromStore(plantData: StoredPlantModel & { id: string }) {
+		const { created_at, id, updated_at, ...additionalFields } = plantData;
+		return new PlantModel({ created_at, id, updated_at, fields: additionalFields });
 	}
 
 	export(): IPlantModel {

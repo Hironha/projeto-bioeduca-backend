@@ -27,7 +27,7 @@ export class ListPlantsUseCase {
 			const lastPlantModel = formattedPlantModels.at(-1);
 			return {
 				hasMore,
-				lastKey: lastPlantModel ? lastPlantModel.created_at.toString() : undefined,
+				lastKey: lastPlantModel ? lastPlantModel.id : undefined,
 				data: formattedPlantModels,
 			};
 		} catch (err) {

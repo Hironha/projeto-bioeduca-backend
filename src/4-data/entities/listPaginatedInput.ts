@@ -2,7 +2,7 @@ import type { IListPaginatedEntityInput } from "@data/interfaces/entities/listPa
 
 export class ListPaginatedInputEntity implements IListPaginatedEntityInput {
 	perPage: number;
-	lastKey?: number;
+	lastKey?: string;
 
 	constructor({ lastKey, perPage }: IListPaginatedEntityInput) {
 		this.lastKey = lastKey;
