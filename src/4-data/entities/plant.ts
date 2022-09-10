@@ -1,17 +1,16 @@
 import type {
-	FormattedPlantEntity,
 	IPlantEntity,
 	PlantEntityFields,
 } from "@data/interfaces/entities/plant";
 
 export class PlantEntity implements IPlantEntity {
-	fields: PlantEntityFields;
+	additional_informations: PlantEntityFields;
 	images?: Express.Multer.File[];
 	created_at: number;
 	updated_at: number;
 
-	constructor({ fields, images, created_at, updated_at }: IPlantEntity) {
-		this.fields = fields;
+	constructor({ additional_informations, images, created_at, updated_at }: IPlantEntity) {
+		this.additional_informations = additional_informations;
 		this.images = images;
 		this.created_at = created_at;
 		this.updated_at = updated_at;
@@ -19,19 +18,10 @@ export class PlantEntity implements IPlantEntity {
 
 	export(): IPlantEntity {
 		return {
-			fields: this.fields,
+			additional_informations: this.additional_informations,
 			images: this.images,
 			created_at: this.created_at,
 			updated_at: this.updated_at,
-		};
-	}
-
-	format(): FormattedPlantEntity {
-		return {
-			...this.fields,
-			created_at: this.created_at,
-			updated_at: this.updated_at,
-			images: this.images,
 		};
 	}
 }

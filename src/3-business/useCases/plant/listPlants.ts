@@ -23,21 +23,16 @@ export class ListPlantsUseCase {
 			if (listPlantsFlow.isLeft()) throw listPlantsFlow.export();
 			const { hasMore, plantModels } = listPlantsFlow.export();
 
-			const formattedPlantModels = this.formatPlantModels(plantModels);
-			const lastPlantModel = formattedPlantModels.at(-1);
+			const lastPlantModel = plantModels.at(-1);
 			return {
 				hasMore,
 				lastKey: lastPlantModel ? lastPlantModel.id : undefined,
-				data: formattedPlantModels,
+				data: plantModels.map((plantModel) => plantModel.export()),
 			};
 		} catch (err) {
 			if (err instanceof Exception) throw err;
 			throw exceptions.default;
 		}
-	}
-
-	private formatPlantModels(plantModels: PlantModel[]) {
-		return plantModels.map((plant) => plant.format());
 	}
 
 	private async createEntity(

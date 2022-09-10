@@ -3,7 +3,7 @@ import { db, storage } from "@utils/database";
 import { PlantModel } from "@data/models/plant";
 import { type PlantEntity } from "@data/entities/plant";
 import { type ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
-import { type StoredPlantModel } from "@data/interfaces/models/plant";
+import { type IStoredPlantModel } from "@data/interfaces/models/plant";
 
 export class PlantRepository {
 	private readonly colletionName = "plants";
@@ -14,7 +14,7 @@ export class PlantRepository {
 	async consultPlantById(id: string) {
 		const doc = await db.collection(this.colletionName).doc(id).get();
 		if (!doc.exists) return undefined;
-		const plantData = doc.data() as StoredPlantModel;
+		const plantData = doc.data() as IStoredPlantModel;
 		return PlantModel.fromStore({ ...plantData, id: doc.id });
 	}
 
@@ -36,7 +36,7 @@ export class PlantRepository {
 
 		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
 		const plantModels: PlantModel[] = queriedSnapshots.map((plantDoc) => {
-			const storedPlantData = plantDoc.data() as StoredPlantModel;
+			const storedPlantData = plantDoc.data() as IStoredPlantModel;
 			return PlantModel.fromStore({ ...storedPlantData, id: plantDoc.id });
 		});
 
@@ -47,18 +47,9 @@ export class PlantRepository {
 	}
 
 	async create(plantEntity: PlantEntity) {
-		const { created_at, updated_at, fields } = plantEntity.export();
-		const createdPlantDoc = await db.collection(this.colletionName).add({
-			created_at,
-			updated_at,
-			...fields,
-		});
-		const plantModel = new PlantModel({
-			created_at,
-			updated_at,
-			fields,
-			id: createdPlantDoc.id,
-		});
+		const { images, ...plantData } = plantEntity.export();
+		const createdPlantDoc = await db.collection(this.colletionName).add(plantData);
+		const plantModel = new PlantModel({ ...plantData, id: createdPlantDoc.id });
 		return plantModel;
 	}
 

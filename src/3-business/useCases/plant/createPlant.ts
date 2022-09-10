@@ -41,7 +41,7 @@ export class CreatePlantUseCase {
 			if (createPlantFlow.isLeft()) throw createPlantFlow.export();
 			const plantModel = createPlantFlow.export();
 
-			return plantModel.format();
+			return plantModel.export();
 		} catch (err) {
 			if (err instanceof Exception) throw err;
 			throw exceptions.default;
@@ -63,8 +63,7 @@ export class CreatePlantUseCase {
 			const input = dto.export();
 			const currTimestamp = new Date().getTime();
 			const plantEntity = new PlantEntity({
-				fields: input.fields,
-				images: input.images,
+				...input,
 				created_at: currTimestamp,
 				updated_at: currTimestamp,
 			});
@@ -90,15 +89,17 @@ export class CreatePlantUseCase {
 		plantInformations: PlantInformationModel[]
 	): Promise<Either<Exception, null>> {
 		try {
-			Object.entries(plantEntity.fields).forEach(([fieldName, value]) => {
+			Object.entries(plantEntity.additional_informations).forEach(([fieldName, value]) => {
 				const field = plantInformations.find(
 					(plantInformation) => plantInformation.field_name === fieldName
 				);
+
 				if (!field) {
 					throw exceptions.plantFieldNotFound.edit({
 						message: `Could not find a registered plant information for the value: ${value}.`,
 					});
 				}
+
 				if (!this.validatePlantField(field.validation, value)) {
 					throw exceptions.inputValidation.edit({
 						message: `The information ${field.field_name} must be ${field.validation}`,
