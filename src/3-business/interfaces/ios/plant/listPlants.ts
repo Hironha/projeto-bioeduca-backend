@@ -1,5 +1,4 @@
 import { type IPlantModel } from "@data/interfaces/models/plant";
-import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 export interface IListPlantsDTOInput {
 	lastKey?: string;
@@ -10,8 +9,6 @@ export interface IListPlantsDTOOutput {
 	lastKey?: string;
 	perPage: number;
 }
-
-export interface IListPlantsInput extends IListPaginatedEntityInput {}
 
 export interface IListPlantsOutput {
 	lastKey?: string;

@@ -6,6 +6,4 @@ export interface ICreatePlantInformationDTOInput
 
 export interface ICreatePlantInformationDTOOutput extends ICreatePlantInformationDTOInput {}
 
-export interface ICreatePlantInformationInput extends ICreatePlantInformationDTOInput {}
-
 export interface ICreatePlantInformationOutput extends IPlantInformationModel {}

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleRequest } from "@utils/controller";
+import { handleRequest, handleMiddleware } from "@utils/controller";
 
 import { ListPlantsController } from "@domain/controllers/plant/listPlants";
 import { CreatePlantController } from "@domain/controllers/plant/createPlant";
@@ -22,7 +22,11 @@ export const usePlantsRouter = () => {
 		},
 	};
 
-	router.post(routes.create.path, handleRequest(routes.create.controller));
+	router.post(
+		routes.create.path,
+		handleMiddleware(routes.create.controller),
+		handleRequest(routes.create.controller)
+	);
 	router.get(routes.list.path, handleRequest(routes.list.controller));
 
 	return router;

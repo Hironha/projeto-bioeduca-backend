@@ -48,27 +48,42 @@ export class PlantRepository {
 
 	async create(plantEntity: PlantEntity) {
 		const { images, ...plantData } = plantEntity.export();
-		const createdPlantDoc = await db.collection(this.colletionName).add(plantData);
-		const plantModel = new PlantModel({ ...plantData, id: createdPlantDoc.id });
+
+		const newPlantDocRef = db.collection(this.colletionName).doc();
+
+		const storedImageURLs = await ((images: Express.Multer.File[] | undefined) => {
+			if (!images) return [] as string[];
+			return this.storeImages(newPlantDocRef.id, images);
+		})(images);
+
+		const plantModel = new PlantModel({
+			...plantData,
+			images: storedImageURLs,
+			id: newPlantDocRef.id,
+		});
+
+		await newPlantDocRef.set(plantModel.export());
+
 		return plantModel;
 	}
 
 	async storeImages(plantId: string, images: Express.Multer.File[]) {
-		await Promise.all(
-			images.map(async (file) => {
-				await this.storeImage(plantId, file);
-			})
-		);
+		return await Promise.all(images.map((file) => this.storeImage(plantId, file)));
 	}
 
 	async storeImage(plantId: string, image: Express.Multer.File) {
 		const bucket = storage.bucket();
-		await bucket.file(`${this.storageName}/${plantId}`).save(image.buffer, {
+		const file = bucket.file(
+			`${this.storageName}/${plantId}/${image.filename || image.originalname}`
+		);
+		await file.save(image.buffer, {
 			public: true,
 			metadata: {
 				contentType: image.mimetype,
 				cacheControl: "public, max-age=" + 60 * 60 * 24,
 			},
 		});
+
+		return file.publicUrl();
 	}
 }

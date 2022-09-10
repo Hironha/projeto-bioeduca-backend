@@ -5,6 +5,4 @@ export interface ICreatePlantDTOInput extends Omit<IPlantEntity, "created_at" | 
 
 export interface ICreatePlantDTOOutput extends ICreatePlantDTOInput {}
 
-export interface ICreatePlantInput extends ICreatePlantDTOInput {}
-
 export interface ICreatePlantOutput extends IPlantModel {}
