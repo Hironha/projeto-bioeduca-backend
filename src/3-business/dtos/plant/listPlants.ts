@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, 	IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
+import { NumberString } from "@utils/validations/NumberString";
 
 import type {
 	IListPlantsDTOInput,
@@ -13,6 +14,7 @@ export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements ILi
 
 	@IsNotEmpty()
 	@IsString()
+	@NumberString({ isInteger: true, min: 1, max: 20 })
 	perPage: string;
 
 	constructor(input: IListPlantsDTOInput) {
