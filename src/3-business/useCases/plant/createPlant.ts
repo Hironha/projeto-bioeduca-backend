@@ -60,14 +60,7 @@ export class CreatePlantUseCase {
 	private async createEntity(dto: CreatePlantDTO): Promise<Either<Exception, PlantEntity>> {
 		try {
 			await dto.validate();
-			const input = dto.export();
-			const currTimestamp = new Date().getTime();
-			const plantEntity = new PlantEntity({
-				...input,
-				created_at: currTimestamp,
-				updated_at: currTimestamp,
-			});
-			return new Right(plantEntity);
+			return new Right(dto.export());
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(exceptions.inputValidation.edit({ message }));

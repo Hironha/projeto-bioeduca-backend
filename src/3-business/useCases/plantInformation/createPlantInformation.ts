@@ -36,14 +36,7 @@ export class CreatePlantInformationUseCase {
 	): Promise<Either<Exception, PlantInformationEntity>> {
 		try {
 			await dto.validate();
-			const inputData = dto.export();
-			const currTimestamp = new Date().getTime();
-			const entity = new PlantInformationEntity({
-				...inputData,
-				created_at: currTimestamp,
-				updated_at: currTimestamp,
-			});
-			return new Right(entity);
+			return new Right(dto.export());
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(new Exception(exceptions.inputValidation).edit({ message }));

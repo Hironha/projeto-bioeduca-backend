@@ -3,12 +3,10 @@ import { IsObject, IsOptional } from "class-validator";
 import { Validator } from "@utils/validator";
 import { ImageArray } from "@utils/validations/imageArray";
 
-import type {
-	ICreatePlantDTOInput,
-	ICreatePlantDTOOutput,
-} from "@business/interfaces/ios/plant/createPlant";
+import { type ICreatePlantDTOInput } from "@business/interfaces/ios/plant/createPlant";
 
-import type { PlantEntityFields } from "@data/interfaces/entities/plant";
+import { PlantEntity } from "@data/entities/plant";
+import { type PlantEntityFields } from "@data/interfaces/entities/plant";
 
 interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_informations"> {
 	additional_informations: string;
@@ -16,7 +14,7 @@ interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_inform
 
 export class CreatePlantDTO
 	extends Validator<ICreatePlantDTOInput>
-	implements ICreatePlantDTOOutput
+	implements ICreatePlantDTOInput
 {
 	@IsOptional()
 	@IsObject()
@@ -42,10 +40,13 @@ export class CreatePlantDTO
 		return new CreatePlantDTO({ ...input, additional_informations: additionalInformations });
 	}
 
-	export(): ICreatePlantDTOOutput {
-		return {
-			additional_informations: this.additional_informations,
+	export(): PlantEntity {
+		const currTimestamp = new Date().getTime();
+		return new PlantEntity({
 			images: this.images,
-		};
+			additional_informations: this.additional_informations,
+			created_at: currTimestamp,
+			updated_at: currTimestamp,
+		});
 	}
 }

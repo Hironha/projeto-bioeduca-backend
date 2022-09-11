@@ -2,10 +2,9 @@ import { IsEnum, IsNotEmpty, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
 import { PlantInformationValidations } from "@data/interfaces/entities/plantInformation";
-import type {
-	ICreatePlantInformationDTOInput,
-	ICreatePlantInformationDTOOutput,
-} from "@business/interfaces/ios/plantInformation/createPlantInformation";
+import { PlantInformationEntity } from "@data/entities/plantInformation";
+
+import type { ICreatePlantInformationDTOInput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
 	extends Validator<ICreatePlantInformationDTOInput>
@@ -27,11 +26,15 @@ export class CreatePlantInformationDTO
 		super(input);
 	}
 
-	export(): ICreatePlantInformationDTOOutput {
-		return {
+	export(): PlantInformationEntity {
+		const currTimestamp = new Date().getTime();
+
+		return new PlantInformationEntity({
 			field_name: this.field_name,
 			validation: this.validation,
 			description: this.description,
-		};
+			created_at: currTimestamp,
+			updated_at: currTimestamp,
+		});
 	}
 }
