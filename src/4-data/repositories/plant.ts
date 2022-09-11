@@ -36,8 +36,8 @@ export class PlantRepository {
 
 		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
 		const plantModels: PlantModel[] = queriedSnapshots.map((plantDoc) => {
-			const storedPlantData = plantDoc.data() as IStoredPlantModel;
-			return PlantModel.fromStore({ ...storedPlantData, id: plantDoc.id });
+			const { images, ...plantData } = plantDoc.data() as IStoredPlantModel;
+			return PlantModel.fromStore({ ...plantData, id: plantDoc.id });
 		});
 
 		return {
@@ -51,20 +51,30 @@ export class PlantRepository {
 
 		const newPlantDocRef = db.collection(this.colletionName).doc();
 
-		const storedImageURLs = await ((images: Express.Multer.File[] | undefined) => {
+		await ((images: Express.Multer.File[] | undefined) => {
 			if (!images) return [] as string[];
 			return this.storeImages(newPlantDocRef.id, images);
 		})(images);
 
 		const plantModel = new PlantModel({
 			...plantData,
-			images: storedImageURLs,
+			images: images ? images.map((file) => file.filename || file.originalname) : [],
 			id: newPlantDocRef.id,
 		});
 
 		await newPlantDocRef.set(plantModel.export());
 
 		return plantModel;
+	}
+
+	async listPlantImagesURLs(plantId: string): Promise<string[]> {
+		const snapshot = await db.collection(this.colletionName).doc(plantId).get();
+		const { images } = snapshot.data() as IStoredPlantModel;
+		if (!images) return [];
+
+		const bucket = storage.bucket();
+		const folderPublicURL = bucket.file(`${this.storageName}/${plantId}`).publicUrl();
+		return images.map((imageName) => `${folderPublicURL}/${imageName}`);
 	}
 
 	async storeImages(plantId: string, images: Express.Multer.File[]) {
@@ -76,6 +86,7 @@ export class PlantRepository {
 		const file = bucket.file(
 			`${this.storageName}/${plantId}/${image.filename || image.originalname}`
 		);
+
 		await file.save(image.buffer, {
 			public: true,
 			metadata: {

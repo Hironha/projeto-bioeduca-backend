@@ -8,4 +8,4 @@ export interface IPlantModel extends Omit<IPlantEntity, "fields" | "images"> {
 	additional_informations: PlantModelFields;
 }
 
-export interface IStoredPlantModel extends Omit<IPlantModel, "id" | "images"> {}
+export interface IStoredPlantModel extends Omit<IPlantModel, "id"> {}

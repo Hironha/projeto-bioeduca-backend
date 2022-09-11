@@ -6,6 +6,7 @@ import cors from "cors";
 import { getAvailableRoutes } from "@utils/routes";
 import { usePlantsRouter } from "@presentation/routers/plants";
 import { usePlantInformationRouter } from "@presentation/routers/plantInformation";
+import { useUserRouter } from "@presentation/routers/user";
 
 dotenv.config();
 const app = express();
@@ -20,7 +21,7 @@ const hostname: string = process.env.NODE_ENV === "development" ? "localhost" : 
 
 const baseUrl = `${hostname}:${port}`;
 
-const routers: Router[] = [usePlantsRouter(), usePlantInformationRouter()];
+const routers: Router[] = [usePlantsRouter(), usePlantInformationRouter(), useUserRouter()];
 
 routers.forEach((router) => {
 	app.use(router);
