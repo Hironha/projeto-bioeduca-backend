@@ -3,6 +3,7 @@ import { handleRequest, handleMiddleware } from "@utils/controller";
 
 import { ListPlantsController } from "@domain/controllers/plant/listPlants";
 import { CreatePlantController } from "@domain/controllers/plant/createPlant";
+import { ConsultPlantController } from "@domain/controllers/plant/consultPlant";
 
 export const plantBaseURL = "/plants";
 
@@ -20,6 +21,11 @@ export const usePlantsRouter = () => {
 			path: plantBaseURL,
 			controller: new ListPlantsController(),
 		},
+		consult: {
+			method: "GET",
+			path: `${plantBaseURL}/:plantId`,
+			controller: new ConsultPlantController(),
+		},
 	};
 
 	router.post(
@@ -28,6 +34,7 @@ export const usePlantsRouter = () => {
 		handleRequest(routes.create.controller)
 	);
 	router.get(routes.list.path, handleRequest(routes.list.controller));
+	router.get(routes.consult.path, handleRequest(routes.consult.controller));
 
 	return router;
 };

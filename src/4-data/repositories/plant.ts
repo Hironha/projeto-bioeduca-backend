@@ -14,8 +14,10 @@ export class PlantRepository {
 	async consultPlantById(id: string) {
 		const doc = await db.collection(this.colletionName).doc(id).get();
 		if (!doc.exists) return undefined;
-		const plantData = doc.data() as IStoredPlantModel;
-		return PlantModel.fromStore({ ...plantData, id: doc.id });
+
+		const { images, ...plantData } = doc.data() as IStoredPlantModel;
+		const imageURLs = await this.listPlantImagesURLs(doc.id, images || []);
+		return PlantModel.fromStore({ ...plantData, images: imageURLs, id: doc.id });
 	}
 
 	async list(listEntity: ListPaginatedInputEntity) {
@@ -62,16 +64,14 @@ export class PlantRepository {
 			id: newPlantDocRef.id,
 		});
 
-		await newPlantDocRef.set(plantModel.export());
+		const { id, ...plantModelData } = plantModel.export();
+
+		await newPlantDocRef.set(plantModelData);
 
 		return plantModel;
 	}
 
-	async listPlantImagesURLs(plantId: string): Promise<string[]> {
-		const snapshot = await db.collection(this.colletionName).doc(plantId).get();
-		const { images } = snapshot.data() as IStoredPlantModel;
-		if (!images) return [];
-
+	async listPlantImagesURLs(plantId: string, images: string[]): Promise<string[]> {
 		const bucket = storage.bucket();
 		const folderPublicURL = bucket.file(`${this.storageName}/${plantId}`).publicUrl();
 		return images.map((imageName) => `${folderPublicURL}/${imageName}`);
