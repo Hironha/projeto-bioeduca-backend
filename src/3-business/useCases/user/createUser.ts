@@ -1,4 +1,4 @@
-import { type Exception } from "@utils/exception";
+import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
 
 import { CreateUserDTO } from "@business/dtos/user/createUser";
@@ -14,21 +14,29 @@ export class CreateUserUseCase {
 	constructor(private userRepository = new UserRepository()) {}
 
 	async exec(input: CreateUserDTO): Promise<ICreateUserOutput> {
-		const getUserEntityFlow = await this.getUserEntity(input);
-		if (getUserEntityFlow.isLeft()) throw getUserEntityFlow.export();
-		const userEntity = getUserEntityFlow.export();
+		try {
+			const getUserEntityFlow = await this.getUserEntity(input);
+			if (getUserEntityFlow.isLeft()) throw getUserEntityFlow.export();
+			const userEntity = getUserEntityFlow.export();
 
-		const createUserFlow = await this.createUser(userEntity);
-		if (createUserFlow.isLeft()) throw createUserFlow.export();
+			const createUserFlow = await this.createUser(userEntity);
+			if (createUserFlow.isLeft()) throw createUserFlow.export();
 
-		return {};
+			return {};
+		} catch (err) {
+			console.error(err);
+			if (err instanceof Exception) throw err;
+			throw exceptions.default;
+		}
 	}
 
 	async createUser(userEntity: UserEntity): Promise<Either<Exception, UserModel>> {
 		try {
 			const userModel = await this.userRepository.createUser(userEntity);
 			return new Right(userModel);
-		} catch (err) {
+		} catch (err: any) {
+			const code = err?.errorInfo?.code;
+			if (code === "auth/email-already-exists") return new Left(exceptions.emailAlreadyExists);
 			return new Left(exceptions.dbError);
 		}
 	}

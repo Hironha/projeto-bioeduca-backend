@@ -3,7 +3,7 @@ import { handleRequest } from "@utils/controller";
 
 import { CreateUserController } from "@domain/controllers/user/createUser";
 
-export const userBaseURL = "/user";
+export const userBaseURL = "/users";
 
 export const useUserRouter = () => {
 	const router = Router({ caseSensitive: true });
