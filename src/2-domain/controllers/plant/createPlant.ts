@@ -25,6 +25,7 @@ export class CreatePlantController implements Controller {
 			const createPlantOutput = await this.createPlantUseCase.exec(dto);
 			res.status(200).json(createPlantOutput);
 		} catch (err) {
+			console.error(err);
 			const exception = err as Exception;
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}
