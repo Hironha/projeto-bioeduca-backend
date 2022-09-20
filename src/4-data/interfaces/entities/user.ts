@@ -1,4 +1,5 @@
-export interface IUserEntity {
-  email: string;
-  password: string;
+import { type IUserModel } from "../models/user";
+
+export interface IUserEntity extends IUserModel {
+	password: string;
 }

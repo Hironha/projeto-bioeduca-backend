@@ -1,10 +1,7 @@
-import type {
-	IPlantEntity,
-	PlantEntityFields,
-} from "@data/interfaces/entities/plant";
+import type { IPlantEntity } from "@data/interfaces/entities/plant";
 
 export class PlantEntity implements IPlantEntity {
-	additional_informations: PlantEntityFields;
+	additional_informations: IPlantEntity["additional_informations"];
 	images?: Express.Multer.File[];
 	created_at: number;
 	updated_at: number;

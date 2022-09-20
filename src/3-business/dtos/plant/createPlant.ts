@@ -5,8 +5,8 @@ import { ImageArray } from "@utils/validations/imageArray";
 
 import { type ICreatePlantDTOInput } from "@business/interfaces/ios/plant/createPlant";
 
+import { IPlantEntity } from "@data/interfaces/entities/plant";
 import { PlantEntity } from "@data/entities/plant";
-import { type PlantEntityFields } from "@data/interfaces/entities/plant";
 
 interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_informations"> {
 	additional_informations: string;
@@ -18,7 +18,7 @@ export class CreatePlantDTO
 {
 	@IsOptional()
 	@IsObject()
-	additional_informations: PlantEntityFields;
+	additional_informations: IPlantEntity["additional_informations"];
 
 	@ImageArray({ maxCount: 5, mime: ["image/jpeg", "image/jpg", "image/png"] })
 	images?: Express.Multer.File[];
@@ -31,7 +31,7 @@ export class CreatePlantDTO
 		const additionalInformations = ((additionalInformations?: string) => {
 			if (!additionalInformations) return {};
 			try {
-				return JSON.parse(additionalInformations) as PlantEntityFields;
+				return JSON.parse(additionalInformations) as IPlantEntity["additional_informations"];
 			} catch (err) {
 				return {};
 			}

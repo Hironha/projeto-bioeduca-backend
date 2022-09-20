@@ -1,6 +1,3 @@
-export interface IPlantInformationEntity {
-	field_name: string;
-	description: string;
-	updated_at: number;
-	created_at: number;
-}
+import { type IPlantInformationModel } from "../models/plantInformation";
+
+export interface IPlantInformationEntity extends Omit<IPlantInformationModel, "id"> {}

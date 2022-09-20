@@ -1,8 +1,5 @@
-export type PlantEntityFields = { [field_name: string]: any };
+import { type IPlantModel } from "../models/plant";
 
-export interface IPlantEntity {
-	additional_informations: PlantEntityFields;
+export interface IPlantEntity extends Omit<IPlantModel, "images" | "id"> {
 	images?: Express.Multer.File[];
-	created_at: number;
-	updated_at: number;
 }
