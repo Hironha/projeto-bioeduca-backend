@@ -21,6 +21,7 @@ export class ConsultPlantController implements Controller {
 			const plant = await this.consultPlantUseCase.exec(dto);
 			res.status(200).json(plant);
 		} catch (err) {
+			console.error(err);
 			const exception = err as Exception;
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}
