@@ -1,4 +1,4 @@
-import { IsObject, IsOptional } from "class-validator";
+import { IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
 
 import { Validator } from "@utils/validator";
 import { ImageArray } from "@utils/validations/imageArray";
@@ -16,6 +16,14 @@ export class CreatePlantDTO
 	extends Validator<ICreatePlantDTOInput>
 	implements ICreatePlantDTOInput
 {
+	@IsNotEmpty()
+	@IsString()
+	popular_name: string;
+
+	@IsNotEmpty()
+	@IsString()
+	scientific_name: string;
+
 	@IsOptional()
 	@IsObject()
 	additional_informations: IPlantEntity["additional_informations"];
@@ -44,6 +52,8 @@ export class CreatePlantDTO
 		const currTimestamp = new Date().getTime();
 		return new PlantEntity({
 			images: this.images,
+			popular_name: this.popular_name,
+			scientific_name: this.scientific_name,
 			additional_informations: this.additional_informations,
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
