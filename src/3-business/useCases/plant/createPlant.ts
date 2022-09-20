@@ -88,7 +88,7 @@ export class CreatePlantUseCase {
 
 				if (!field) {
 					throw exceptions.plantFieldNotFound.edit({
-						message: `Could not find a registered plant information for the value: ${value}.`,
+						message: `Could not find a registered plant information for the field: ${fieldName}.`,
 					});
 				}
 
