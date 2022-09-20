@@ -11,7 +11,6 @@ import { PlantEntity } from "@data/entities/plant";
 import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 import { PlantRepository } from "@data/repositories/plant";
 import { PlantInformationRepository } from "@data/repositories/plantInformation";
-import { PlantInformationValidations } from "@data/interfaces/entities/plantInformation";
 
 import { createPlantExceptions as exceptions } from "./exceptions/createPlant";
 
@@ -93,9 +92,9 @@ export class CreatePlantUseCase {
 					});
 				}
 
-				if (!this.validatePlantField(field.validation, value)) {
+				if (!this.validatePlantField(value)) {
 					throw exceptions.inputValidation.edit({
-						message: `The information ${field.field_name} must be ${field.validation}`,
+						message: `The information ${field.field_name} must be a string`,
 					});
 				}
 			});
@@ -107,12 +106,7 @@ export class CreatePlantUseCase {
 		}
 	}
 
-	private validatePlantField(fieldValidation: PlantInformationValidations, value: any) {
-		switch (fieldValidation) {
-			case PlantInformationValidations.STRING:
-				return isString(value);
-			default:
-				return false;
-		}
+	private validatePlantField(value: string) {
+		return isString(value);
 	}
 }
