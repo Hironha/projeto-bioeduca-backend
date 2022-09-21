@@ -50,13 +50,20 @@ export class CreatePlantDTO
 
 	export(): PlantEntity {
 		const currTimestamp = new Date().getTime();
+
 		return new PlantEntity({
 			images: this.images,
-			popular_name: this.popular_name,
-			scientific_name: this.scientific_name,
-			additional_informations: this.additional_informations,
+			popular_name: this.popular_name.trim(),
+			scientific_name: this.scientific_name.trim(),
+			additional_informations: this.parseAdditionalInformations(),
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
 		});
+	}
+
+	private parseAdditionalInformations() {
+		const entries = Object.entries(this.additional_informations);
+		const parsedEntries = entries.map(([key, value]) => [key, value.trim()]);
+		return Object.fromEntries(parsedEntries);
 	}
 }
