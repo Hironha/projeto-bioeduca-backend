@@ -25,8 +25,8 @@ export class CreatePlantInformationDTO
 		const currTimestamp = new Date().getTime();
 
 		return new PlantInformationEntity({
-			field_name: this.field_name,
-			description: this.description,
+			field_name: this.field_name.trim(),
+			description: this.description.trim(),
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
 		});
