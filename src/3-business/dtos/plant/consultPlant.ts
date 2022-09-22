@@ -1,6 +1,7 @@
-import { IConsultPlantDTOInput } from "@business/interfaces/ios/plant/consultPlant";
 import { Validator } from "@utils/validator";
 import { IsNotEmpty, IsString } from "class-validator";
+
+import { type IConsultPlantDTOInput } from "@business/interfaces/ios/plant/consultPlant";
 
 export class ConsultPlantDTO
 	extends Validator<IConsultPlantDTOInput>

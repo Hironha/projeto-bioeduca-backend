@@ -5,8 +5,8 @@ import { ImageArray } from "@utils/validations/imageArray";
 
 import { type ICreatePlantDTOInput } from "@business/interfaces/ios/plant/createPlant";
 
-import { IPlantEntity } from "@data/interfaces/entities/plant";
 import { PlantEntity } from "@data/entities/plant";
+import { type IPlantEntity } from "@data/interfaces/entities/plant";
 
 interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_informations"> {
 	additional_informations: string;
