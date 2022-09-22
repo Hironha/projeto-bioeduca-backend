@@ -1,11 +1,12 @@
 import { type Exception } from "@utils/exception";
 import { type Controller } from "@utils/controller";
 
+import { ConsultPlantDTO } from "@business/dtos/plant/consultPlant";
+import { ConsultPlantUseCase } from "@business/useCases/plant/consultPlant";
+
 import type { ParsedQs } from "qs";
 import type { Request, Response, NextFunction } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
-import { ConsultPlantDTO } from "@business/dtos/plant/consultPlant";
-import { ConsultPlantUseCase } from "@business/useCases/plant/consultPlant";
 
 export class ConsultPlantController implements Controller {
 	constructor(private consultPlantUseCase = new ConsultPlantUseCase()) {}

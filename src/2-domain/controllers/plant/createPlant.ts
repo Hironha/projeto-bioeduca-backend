@@ -1,6 +1,6 @@
 import multer from "multer";
-import { Controller } from "@utils/controller";
-import type { Exception } from "@utils/exception";
+import { type Controller } from "@utils/controller";
+import { type Exception } from "@utils/exception";
 
 import { CreatePlantDTO } from "@business/dtos/plant/createPlant";
 import { CreatePlantUseCase } from "@business/useCases/plant/createPlant";

@@ -1,4 +1,4 @@
-import { Controller } from "@utils/controller";
+import { type Controller } from "@utils/controller";
 import { type Exception } from "@utils/exception";
 
 import { ListPlantsDTO } from "@business/dtos/plant/listPlants";
