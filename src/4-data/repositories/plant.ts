@@ -1,9 +1,10 @@
 import { db, storage } from "@utils/database";
 
 import { PlantModel } from "@data/models/plant";
+import { PlantPreviewModel } from "@data/models/plantPreview";
 import { type PlantEntity } from "@data/entities/plant";
 import { type ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
-import { type IStoredPlantModel } from "@data/interfaces/models/plant";
+import { type IStoredPlantModel, IPlantPreviewModel } from "@data/interfaces/models/plant";
 
 export class PlantRepository {
 	private readonly colletionName = "plants";
@@ -11,40 +12,69 @@ export class PlantRepository {
 
 	constructor() {}
 
+	private async getPlantSnapshot(plantId?: string) {
+		if (!plantId) return undefined;
+		return await db.collection(this.colletionName).doc(plantId).get();
+	}
+
+	private async getListSnapshot(
+		query: FirebaseFirestore.Query<FirebaseFirestore.DocumentData>,
+		lastPlantIdSent?: string
+	) {
+		const lastSnapshotSent = await this.getPlantSnapshot(lastPlantIdSent);
+
+		if (lastSnapshotSent) return await query.startAfter(lastSnapshotSent).get();
+		return await query.get();
+	}
+
 	async consultPlantById(id: string) {
 		const doc = await db.collection(this.colletionName).doc(id).get();
 		if (!doc.exists) return undefined;
 
 		const { images, ...plantData } = doc.data() as IStoredPlantModel;
-		const imageURLs = await this.listPlantImagesURLs(doc.id, images || []);
-		return PlantModel.fromStore({ ...plantData, images: imageURLs, id: doc.id });
+		const imageURLs = this.listPlantImagesURLs(doc.id, images || []);
+		return new PlantModel({ ...plantData, images: imageURLs, id: doc.id });
 	}
 
 	async list(listEntity: ListPaginatedInputEntity) {
-		const lastSentPlantSnapshot = await (async (plantId: string | undefined) => {
-			if (!plantId) return undefined;
-			return await db.collection(this.colletionName).doc(plantId).get();
-		})(listEntity.lastKey);
-
 		const listQuery = db
 			.collection(this.colletionName)
 			.limit(listEntity.perPage + 1)
 			.orderBy("created_at", "desc");
 
-		const listSnapshot = await (async () => {
-			if (lastSentPlantSnapshot) return await listQuery.startAfter(lastSentPlantSnapshot).get();
-			return await listQuery.get();
-		})();
+		const listSnapshot = await this.getListSnapshot(listQuery, listEntity.lastKey);
 
 		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
 		const plantModels: PlantModel[] = queriedSnapshots.map((plantDoc) => {
 			const { images, ...plantData } = plantDoc.data() as IStoredPlantModel;
-			return PlantModel.fromStore({ ...plantData, id: plantDoc.id });
+			return new PlantModel({ ...plantData, images, id: plantDoc.id });
 		});
 
 		return {
 			hasMore: listSnapshot.size > plantModels.length,
 			plantModels,
+		};
+	}
+
+	async listPreview(listEntity: ListPaginatedInputEntity) {
+		const listQuery = db
+			.collection(this.colletionName)
+			.limit(listEntity.perPage + 1)
+			.select("scientific_name", "popular_name", "images")
+			.orderBy("created_at", "desc");
+
+		const listSnapshot = await this.getListSnapshot(listQuery, listEntity.lastKey);
+
+		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
+		const plantPreviewModels: PlantPreviewModel[] = queriedSnapshots.map((plantDoc) => {
+			const { images, ...plantData } = plantDoc.data() as IPlantPreviewModel;
+			const imageURLS = this.listPlantImagesURLs(plantDoc.id, images ?? []);
+			return new PlantPreviewModel({ ...plantData, images: imageURLS, id: plantDoc.id });
+		});
+
+		return {
+			hasMore: listSnapshot.size > plantPreviewModels.length,
+			plantPreviewModels,
 		};
 	}
 
@@ -71,7 +101,7 @@ export class PlantRepository {
 		return plantModel;
 	}
 
-	async listPlantImagesURLs(plantId: string, images: string[]): Promise<string[]> {
+	listPlantImagesURLs(plantId: string, images: string[]) {
 		const bucket = storage.bucket();
 		const folderPublicURL = bucket.file(`${this.storageName}/${plantId}`).publicUrl();
 		return images.map((imageName) => `${folderPublicURL}/${imageName}`);

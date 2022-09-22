@@ -10,4 +10,7 @@ export interface IPlantModel {
 	updated_at: number;
 }
 
+export interface IPlantPreviewModel
+	extends Pick<IPlantModel, "id" | "popular_name" | "scientific_name" | 'images'> {}
+
 export interface IStoredPlantModel extends Omit<IPlantModel, "id"> {}

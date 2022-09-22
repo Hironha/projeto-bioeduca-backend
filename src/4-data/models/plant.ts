@@ -1,8 +1,4 @@
-import type {
-	IPlantModel,
-	PlantModelFields,
-	IStoredPlantModel,
-} from "@data/interfaces/models/plant";
+import type { IPlantModel, PlantModelFields } from "@data/interfaces/models/plant";
 
 export class PlantModel implements IPlantModel {
 	id: string;
@@ -29,10 +25,6 @@ export class PlantModel implements IPlantModel {
 		this.created_at = created_at;
 		this.updated_at = updated_at;
 		this.additional_informations = additional_informations;
-	}
-
-	static fromStore(plantData: IStoredPlantModel & { id: string }) {
-		return new PlantModel(plantData);
 	}
 
 	export(): IPlantModel {

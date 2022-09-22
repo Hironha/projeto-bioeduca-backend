@@ -15,13 +15,13 @@ export abstract class Controller {
 }
 
 export const handleRequest = (controller: Controller) => {
-	return (req: Request, res: Response, next: NextFunction) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		controller.handleRequest(req, res, next);
 	};
 };
 
 export const handleMiddleware = (controller: Controller) => {
-	return (req: Request, res: Response, next: NextFunction) => {
+	return async (req: Request, res: Response, next: NextFunction) => {
 		controller.handleMiddleware(req, res, next);
 	};
 };
