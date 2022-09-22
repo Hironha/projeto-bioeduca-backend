@@ -1,4 +1,4 @@
-import { IUserModel } from "@data/interfaces/models/user";
+import { type IUserModel } from "@data/interfaces/models/user";
 
 export class UserModel implements IUserModel {
 	email: string;
