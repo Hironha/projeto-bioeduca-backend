@@ -1,5 +1,6 @@
 import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
+import { type IUseCase } from "@utils/useCase";
 
 import { type ListPlantInfomationsDTO } from "@business/dtos/plantInformation/listPlantInformations";
 import { type IListPlantInformationsOutput } from "@business/interfaces/ios/plantInformation/listPlantInformation";
@@ -10,7 +11,9 @@ import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPa
 
 import { listPlantInformationsExceptions as exceptions } from "./exceptions/listPlantInformations";
 
-export class ListPlantInformationsUseCase {
+export class ListPlantInformationsUseCase
+	implements IUseCase<ListPlantInfomationsDTO, IListPlantInformationsOutput>
+{
 	constructor(private readonly plantInformationRepository = new PlantInformationRepository()) {}
 
 	async exec(input: ListPlantInfomationsDTO): Promise<IListPlantInformationsOutput> {

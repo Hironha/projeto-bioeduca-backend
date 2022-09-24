@@ -1,5 +1,6 @@
 import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
+import { type IUseCase } from "@utils/useCase";
 
 import { CreateUserDTO } from "@business/dtos/user/createUser";
 import { type ICreateUserOutput } from "@business/interfaces/ios/user/createUser";
@@ -10,7 +11,7 @@ import { type UserModel } from "@data/models/user";
 
 import { createUserExceptions as exceptions } from "./exceptions";
 
-export class CreateUserUseCase {
+export class CreateUserUseCase implements IUseCase<CreateUserDTO, ICreateUserOutput> {
 	constructor(private userRepository = new UserRepository()) {}
 
 	async exec(input: CreateUserDTO): Promise<ICreateUserOutput> {

@@ -1,6 +1,7 @@
 import { Left, Right, type Either } from "@utils/flow";
 import { isString } from "class-validator";
 import { Exception } from "@utils/exception";
+import { type IUseCase } from "@utils/useCase";
 
 import { type CreatePlantDTO } from "@business/dtos/plant/createPlant";
 import { type ICreatePlantOutput } from "@business/interfaces/ios/plant/createPlant";
@@ -13,7 +14,7 @@ import { PlantInformationRepository } from "@data/repositories/plantInformation"
 
 import { createPlantExceptions as exceptions } from "./exceptions/createPlant";
 
-export class CreatePlantUseCase {
+export class CreatePlantUseCase implements IUseCase<CreatePlantDTO, ICreatePlantOutput> {
 	constructor(
 		private readonly plantRepository = new PlantRepository(),
 		private readonly plantInformationRepository = new PlantInformationRepository()

@@ -1,5 +1,6 @@
 import { Left, Right, type Either } from "@utils/flow";
 import { Exception } from "@utils/exception";
+import { type IUseCase } from "@utils/useCase";
 
 import { type ConsultPlantDTO } from "@business/dtos/plant/consultPlant";
 import type {
@@ -12,7 +13,7 @@ import { type PlantModel } from "@data/models/plant";
 
 import { consultPlantExceptions as exceptions } from "./exceptions/consultPlant";
 
-export class ConsultPlantUseCase {
+export class ConsultPlantUseCase implements IUseCase<ConsultPlantDTO, IConsultPlantOutput> {
 	constructor(private plantRepository = new PlantRepository()) {}
 
 	async exec(dto: ConsultPlantDTO): Promise<IConsultPlantOutput> {
