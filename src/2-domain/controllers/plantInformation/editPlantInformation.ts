@@ -17,7 +17,7 @@ export class EditPlantInformationController implements Controller {
 	): Promise<void> {
 		try {
 			const input = req.body;
-			const { id } = req.query;
+			const { id } = req.params;
 			const dto = new EditPlantInformationDTO({ ...input, id });
 			const editPlantInformationOutput = await this.editPlantInformationUseCase.exec(dto);
 			res.status(200).json(editPlantInformationOutput);

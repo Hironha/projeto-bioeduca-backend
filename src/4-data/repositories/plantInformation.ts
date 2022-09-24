@@ -58,9 +58,10 @@ export class PlantInformationRepository {
 		const snapshot = await docRef.get();
 		if (!snapshot.exists) throw { code: "not-exists" };
 		await docRef.set({ ...editData });
-		const snapshotData = snapshot.data();
-		if (!snapshotData) throw { code: "not-exists" };
-		const storedPlantInformation = snapshotData as Omit<IPlantInformationModel, "id">;
+		const editedSnapshot = await docRef.get()
+		const editedSnapshoData =  editedSnapshot.data()
+		if (!editedSnapshoData) throw { code: "not-exists" };
+		const storedPlantInformation = editedSnapshoData as Omit<IPlantInformationModel, "id">;
 		return new PlantInformationModel({ ...storedPlantInformation, id: docRef.id });
 	}
 }
