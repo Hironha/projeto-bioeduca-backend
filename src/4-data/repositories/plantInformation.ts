@@ -49,4 +49,18 @@ export class PlantInformationRepository {
 
 		return plantInformations;
 	}
+
+	async edit(
+		id: string,
+		editData: Partial<IPlantInformationEntity>
+	): Promise<PlantInformationModel> {
+		const docRef = db.collection(this.plantInformationsCollection).doc(id);
+		const snapshot = await docRef.get();
+		if (!snapshot.exists) throw { code: "not-exists" };
+		await docRef.set({ ...editData });
+		const snapshotData = snapshot.data();
+		if (!snapshotData) throw { code: "not-exists" };
+		const storedPlantInformation = snapshotData as Omit<IPlantInformationModel, "id">;
+		return new PlantInformationModel({ ...storedPlantInformation, id: docRef.id });
+	}
 }
