@@ -7,8 +7,7 @@ import { type ICreatePlantOutput } from "@business/interfaces/ios/plant/createPl
 
 import { type PlantModel } from "@data/models/plant";
 import { type PlantInformationModel } from "@data/models/plantInformation";
-import { PlantEntity } from "@data/entities/plant";
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
+import { type IPlantEntity } from "@data/interfaces/entities/plant";
 import { PlantRepository } from "@data/repositories/plant";
 import { PlantInformationRepository } from "@data/repositories/plantInformation";
 
@@ -47,7 +46,7 @@ export class CreatePlantUseCase {
 		}
 	}
 
-	private async createPlant(plantEntity: PlantEntity): Promise<Either<Exception, PlantModel>> {
+	private async createPlant(plantEntity: IPlantEntity): Promise<Either<Exception, PlantModel>> {
 		try {
 			const plantModel = await this.plantRepository.create(plantEntity);
 			return new Right(plantModel);
@@ -56,7 +55,7 @@ export class CreatePlantUseCase {
 		}
 	}
 
-	private async createEntity(dto: CreatePlantDTO): Promise<Either<Exception, PlantEntity>> {
+	private async createEntity(dto: CreatePlantDTO): Promise<Either<Exception, IPlantEntity>> {
 		try {
 			await dto.validate();
 			return new Right(dto.export());
@@ -68,8 +67,7 @@ export class CreatePlantUseCase {
 
 	private async getAllPlantInformations(): Promise<Either<Exception, PlantInformationModel[]>> {
 		try {
-			const listPaginatedEntity = new ListPaginatedInputEntity({ perPage: 100000 });
-			const storedFields = await this.plantInformationRepository.list(listPaginatedEntity);
+			const storedFields = await this.plantInformationRepository.list({ perPage: 1000 });
 			return new Right(storedFields);
 		} catch (err) {
 			return new Left(exceptions.dbError);
@@ -77,7 +75,7 @@ export class CreatePlantUseCase {
 	}
 
 	private async validatePlantFields(
-		plantEntity: PlantEntity,
+		plantEntity: IPlantEntity,
 		plantInformations: PlantInformationModel[]
 	): Promise<Either<Exception, null>> {
 		try {

@@ -1,8 +1,8 @@
 import { db } from "@utils/database";
 
-import { PlantInformationEntity } from "@data/entities/plantInformation";
 import { PlantInformationModel } from "@data/models/plantInformation";
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
+import { type IPlantInformationEntity } from "@data/interfaces/entities/plantInformation";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 import { type IPlantInformationModel } from "@data/interfaces/models/plantInformation";
 
 export class PlantInformationRepository {
@@ -10,8 +10,7 @@ export class PlantInformationRepository {
 
 	constructor() {}
 
-	async create(entity: PlantInformationEntity) {
-		const entityData = entity.export();
+	async create(entity: IPlantInformationEntity) {
 		db.collection(this.plantInformationsCollection);
 
 		const newDocRef = db.collection(this.plantInformationsCollection).doc();
@@ -20,11 +19,11 @@ export class PlantInformationRepository {
 				const docRef = await transaction.get(
 					db
 						.collection(this.plantInformationsCollection)
-						.where("field_name", "==", entityData.field_name)
+						.where("field_name", "==", entity.field_name)
 						.limit(1)
 				);
 				if (docRef.empty) {
-					transaction.create(newDocRef, entityData);
+					transaction.create(newDocRef, entity);
 					resolve(true);
 				} else {
 					reject({ code: "duplicated-field_name" });
@@ -32,12 +31,12 @@ export class PlantInformationRepository {
 			});
 		});
 
-		const createdPlantInformation = new PlantInformationModel({ ...entityData, id: newDocRef.id });
+		const createdPlantInformation = new PlantInformationModel({ ...entity, id: newDocRef.id });
 
 		return createdPlantInformation;
 	}
 
-	async list(_entity: ListPaginatedInputEntity) {
+	async list(_entity: IListPaginatedEntityInput) {
 		// const entityData = entity.export();
 		const snapshot = await db.collection(this.plantInformationsCollection).get();
 		const plantInformations: PlantInformationModel[] = [];

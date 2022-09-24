@@ -1,9 +1,10 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
-import { PlantInformationEntity } from "@data/entities/plantInformation";
-
-import type { ICreatePlantInformationDTOInput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
+import {
+	type ICreatePlantInformationDTOInput,
+	type ICreatePlantInformationDTOOutput,
+} from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
 	extends Validator<ICreatePlantInformationDTOInput>
@@ -21,14 +22,15 @@ export class CreatePlantInformationDTO
 		super(input);
 	}
 
-	export(): PlantInformationEntity {
+	export(): ICreatePlantInformationDTOOutput {
 		const currTimestamp = new Date().getTime();
 
-		return new PlantInformationEntity({
+		return {
 			field_name: this.field_name.trim(),
 			description: this.description.trim(),
+
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
-		});
+		};
 	}
 }

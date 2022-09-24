@@ -4,4 +4,6 @@ import type { IPlantInformationEntity } from "@data/interfaces/entities/plantInf
 export interface ICreatePlantInformationDTOInput
 	extends Omit<IPlantInformationEntity, "created_at" | "updated_at"> {}
 
+export interface ICreatePlantInformationDTOOutput extends IPlantInformationEntity {}
+
 export interface ICreatePlantInformationOutput extends IPlantInformationModel {}

@@ -5,6 +5,11 @@ export interface IListPlantsPreviewDTOInput {
 	perPage: string;
 }
 
+export interface IListPlantsPreviewDTOOutput {
+	lastKey?: string;
+	perPage: number;
+}
+
 export interface IListPlantsPreviewOutput {
 	lastKey?: string;
 	hasMore: boolean;

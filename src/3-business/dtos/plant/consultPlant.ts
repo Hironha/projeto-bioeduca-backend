@@ -1,7 +1,10 @@
 import { Validator } from "@utils/validator";
 import { IsNotEmpty, IsString } from "class-validator";
 
-import { type IConsultPlantDTOInput } from "@business/interfaces/ios/plant/consultPlant";
+import {
+	type IConsultPlantDTOOutput,
+	type IConsultPlantDTOInput,
+} from "@business/interfaces/ios/plant/consultPlant";
 
 export class ConsultPlantDTO
 	extends Validator<IConsultPlantDTOInput>
@@ -15,7 +18,7 @@ export class ConsultPlantDTO
 		super(input);
 	}
 
-	export(): IConsultPlantDTOInput {
+	export(): IConsultPlantDTOOutput {
 		return {
 			plantId: this.plantId,
 		};

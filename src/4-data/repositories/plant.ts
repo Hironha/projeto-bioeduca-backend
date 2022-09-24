@@ -2,8 +2,8 @@ import { db, storage } from "@utils/database";
 
 import { PlantModel } from "@data/models/plant";
 import { PlantPreviewModel } from "@data/models/plantPreview";
-import { type PlantEntity } from "@data/entities/plant";
-import { type ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
+import { type IPlantEntity } from "@data/interfaces/entities/plant";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 import { type IStoredPlantModel, IPlantPreviewModel } from "@data/interfaces/models/plant";
 
 export class PlantRepository {
@@ -36,7 +36,7 @@ export class PlantRepository {
 		return new PlantModel({ ...plantData, images: imageURLs, id: doc.id });
 	}
 
-	async list(listEntity: ListPaginatedInputEntity) {
+	async list(listEntity: IListPaginatedEntityInput) {
 		const listQuery = db
 			.collection(this.colletionName)
 			.limit(listEntity.perPage + 1)
@@ -56,7 +56,7 @@ export class PlantRepository {
 		};
 	}
 
-	async listPreview(listEntity: ListPaginatedInputEntity) {
+	async listPreview(listEntity: IListPaginatedEntityInput) {
 		const listQuery = db
 			.collection(this.colletionName)
 			.limit(listEntity.perPage + 1)
@@ -78,8 +78,8 @@ export class PlantRepository {
 		};
 	}
 
-	async create(plantEntity: PlantEntity) {
-		const { images, ...plantData } = plantEntity.export();
+	async create(plantEntity: IPlantEntity) {
+		const { images, ...plantData } = plantEntity;
 
 		const newPlantDocRef = db.collection(this.colletionName).doc();
 

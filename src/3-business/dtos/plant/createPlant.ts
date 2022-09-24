@@ -3,9 +3,11 @@ import { IsNotEmpty, IsObject, IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 import { ImageArray } from "@utils/validations/imageArray";
 
-import { type ICreatePlantDTOInput } from "@business/interfaces/ios/plant/createPlant";
+import {
+	type ICreatePlantDTOInput,
+	type ICreatePlantDTOOutput,
+} from "@business/interfaces/ios/plant/createPlant";
 
-import { PlantEntity } from "@data/entities/plant";
 import { type IPlantEntity } from "@data/interfaces/entities/plant";
 
 interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_informations"> {
@@ -48,17 +50,17 @@ export class CreatePlantDTO
 		return new CreatePlantDTO({ ...input, additional_informations: additionalInformations });
 	}
 
-	export(): PlantEntity {
+	export(): ICreatePlantDTOOutput {
 		const currTimestamp = new Date().getTime();
 
-		return new PlantEntity({
+		return {
 			images: this.images,
 			popular_name: this.popular_name.trim(),
 			scientific_name: this.scientific_name.trim(),
 			additional_informations: this.parseAdditionalInformations(),
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
-		});
+		};
 	}
 
 	private parseAdditionalInformations() {

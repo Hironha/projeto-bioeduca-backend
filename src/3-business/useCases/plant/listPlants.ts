@@ -4,9 +4,9 @@ import { Left, Right, type Either } from "@utils/flow";
 import { ListPlantsDTO } from "@business/dtos/plant/listPlants";
 import { type IListPlantsOutput } from "@business/interfaces/ios/plant/listPlants";
 
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 import { PlantRepository } from "@data/repositories/plant";
 import { type PlantModel } from "@data/models/plant";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 import { listPlantsExceptions as exceptions } from "./exceptions/listPlants";
 
@@ -37,7 +37,7 @@ export class ListPlantsUseCase {
 
 	private async createEntity(
 		dto: ListPlantsDTO
-	): Promise<Either<Exception, ListPaginatedInputEntity>> {
+	): Promise<Either<Exception, IListPaginatedEntityInput>> {
 		try {
 			await dto.validate();
 			return new Right(dto.export());
@@ -48,7 +48,7 @@ export class ListPlantsUseCase {
 	}
 
 	private async listPlants(
-		listEntity: ListPaginatedInputEntity
+		listEntity: IListPaginatedEntityInput
 	): Promise<Either<Exception, { hasMore: boolean; plantModels: PlantModel[] }>> {
 		try {
 			const { hasMore, plantModels } = await this.plantRepository.list(listEntity);

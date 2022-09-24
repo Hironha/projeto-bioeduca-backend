@@ -2,12 +2,11 @@ import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
 
 import { type CreatePlantInformationDTO } from "@business/dtos/plantInformation/createPlantInformation";
+import { type ICreatePlantInformationOutput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
-import { PlantInformationEntity } from "@data/entities/plantInformation";
 import { PlantInformationRepository } from "@data/repositories/plantInformation";
 import { PlantInformationModel } from "@data/models/plantInformation";
-
-import { type ICreatePlantInformationOutput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
+import { type IPlantInformationEntity } from "@data/interfaces/entities/plantInformation";
 
 import { createPlantInformationExceptions as exceptions } from "./exceptions/createPlantInformation";
 
@@ -33,7 +32,7 @@ export class CreatePlantInformationUseCase {
 
 	private async getEntity(
 		dto: CreatePlantInformationDTO
-	): Promise<Either<Exception, PlantInformationEntity>> {
+	): Promise<Either<Exception, IPlantInformationEntity>> {
 		try {
 			await dto.validate();
 			return new Right(dto.export());
@@ -44,7 +43,7 @@ export class CreatePlantInformationUseCase {
 	}
 
 	private async createPlantInformation(
-		entity: PlantInformationEntity
+		entity: IPlantInformationEntity
 	): Promise<Either<Exception, PlantInformationModel>> {
 		try {
 			const createdPlantInformation = await this.plantInformationRepository.create(entity);

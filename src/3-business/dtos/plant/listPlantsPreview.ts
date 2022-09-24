@@ -3,9 +3,11 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 import { NumberString } from "@utils/validations/NumberString";
 
-import { type IListPlantsPreviewDTOInput } from "@business/interfaces/ios/plant/listPlantsPreview";
+import {
+	type IListPlantsPreviewDTOInput,
+	type IListPlantsPreviewDTOOutput,
+} from "@business/interfaces/ios/plant/listPlantsPreview";
 
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 export class ListPlantsPreviewDTO
 	extends Validator<IListPlantsPreviewDTOInput>
 	implements IListPlantsPreviewDTOInput
@@ -23,7 +25,7 @@ export class ListPlantsPreviewDTO
 		super(input);
 	}
 
-	export(): ListPaginatedInputEntity {
-		return new ListPaginatedInputEntity({ perPage: parseInt(this.perPage), lastKey: this.lastKey });
+	export(): IListPlantsPreviewDTOOutput {
+		return { perPage: parseInt(this.perPage), lastKey: this.lastKey };
 	}
 }

@@ -5,7 +5,7 @@ import { CreateUserDTO } from "@business/dtos/user/createUser";
 import { type ICreateUserOutput } from "@business/interfaces/ios/user/createUser";
 
 import { UserRepository } from "@data/repositories/user";
-import { UserEntity } from "@data/entities/user";
+import { type IUserEntity } from "@data/interfaces/entities/user";
 import { type UserModel } from "@data/models/user";
 
 import { createUserExceptions as exceptions } from "./exceptions";
@@ -30,7 +30,7 @@ export class CreateUserUseCase {
 		}
 	}
 
-	async createUser(userEntity: UserEntity): Promise<Either<Exception, UserModel>> {
+	async createUser(userEntity: IUserEntity): Promise<Either<Exception, UserModel>> {
 		try {
 			const userModel = await this.userRepository.createUser(userEntity);
 			return new Right(userModel);
@@ -41,11 +41,11 @@ export class CreateUserUseCase {
 		}
 	}
 
-	async getUserEntity(dto: CreateUserDTO): Promise<Either<Exception, UserEntity>> {
+	async getUserEntity(dto: CreateUserDTO): Promise<Either<Exception, IUserEntity>> {
 		try {
 			await dto.validate();
 			const dtoData = dto.export();
-			return new Right(new UserEntity(dtoData));
+			return new Right(dtoData);
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(exceptions.inputValidation.edit({ message }));

@@ -5,8 +5,8 @@ import { type ListPlantsPreviewDTO } from "@business/dtos/plant/listPlantsPrevie
 import { type IListPlantsPreviewOutput } from "@business/interfaces/ios/plant/listPlantsPreview";
 
 import { PlantRepository } from "@data/repositories/plant";
-import { type ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 import { type PlantPreviewModel } from "@data/models/plantPreview";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 import { listPlantsPreviewExceptions as exceptions } from "./exceptions/listPlantsPreview";
 
@@ -20,7 +20,7 @@ export class ListPlantsPreviewUseCase {
 			const listPaginatedEntity = createEntityFlow.export();
 
 			const listPlantPreviewsFlow = await this.listPlantPreviews(listPaginatedEntity);
-			if (listPlantPreviewsFlow.isLeft()) throw listPaginatedEntity.export();
+			if (listPlantPreviewsFlow.isLeft()) throw listPlantPreviewsFlow.export();
 			const { hasMore, plantPreviewModels } = listPlantPreviewsFlow.export();
 
 			const lastPlantPreviewModel = plantPreviewModels.at(-1);
@@ -38,7 +38,7 @@ export class ListPlantsPreviewUseCase {
 
 	private async createEntity(
 		dto: ListPlantsPreviewDTO
-	): Promise<Either<Exception, ListPaginatedInputEntity>> {
+	): Promise<Either<Exception, IListPaginatedEntityInput>> {
 		try {
 			await dto.validate();
 			const listPaginatedEntity = dto.export();
@@ -50,7 +50,7 @@ export class ListPlantsPreviewUseCase {
 	}
 
 	private async listPlantPreviews(
-		listPaginatedEntity: ListPaginatedInputEntity
+		listPaginatedEntity: IListPaginatedEntityInput
 	): Promise<Either<Exception, { hasMore: boolean; plantPreviewModels: PlantPreviewModel[] }>> {
 		try {
 			const { hasMore, plantPreviewModels } = await this.plantRepository.listPreview(

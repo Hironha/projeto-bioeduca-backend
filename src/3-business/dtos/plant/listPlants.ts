@@ -3,9 +3,11 @@ import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 import { NumberString } from "@utils/validations/NumberString";
 
-import { type IListPlantsDTOInput } from "@business/interfaces/ios/plant/listPlants";
+import {
+	type IListPlantsDTOInput,
+	type IListPlantsDTOOutput,
+} from "@business/interfaces/ios/plant/listPlants";
 
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements IListPlantsDTOInput {
 	@IsOptional()
 	@IsString()
@@ -20,7 +22,7 @@ export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements ILi
 		super(input);
 	}
 
-	export(): ListPaginatedInputEntity {
-		return new ListPaginatedInputEntity({ perPage: parseInt(this.perPage), lastKey: this.lastKey });
+	export(): IListPlantsDTOOutput {
+		return { perPage: parseInt(this.perPage), lastKey: this.lastKey };
 	}
 }

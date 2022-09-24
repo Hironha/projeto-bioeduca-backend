@@ -1,16 +1,14 @@
 import { auth } from "firebase-admin";
 
 import { UserModel } from "@data/models/user";
-import { type UserEntity } from "@data/entities/user";
+import { type IUserEntity } from "@data/interfaces/entities/user";
 
 export class UserRepository {
-	public async createUser(userEntity: UserEntity) {
-		const userData = userEntity.export();
-
+	public async createUser(userEntity: IUserEntity) {
 		await auth().createUser({
-			...userData,
+			...userEntity,
 		});
 
-		return new UserModel({ ...userData });
+		return new UserModel({ ...userEntity });
 	}
 }
