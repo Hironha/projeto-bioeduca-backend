@@ -1,3 +1,4 @@
+import { firestore } from "firebase-admin";
 import { db, storage } from "@utils/database";
 
 import { PlantModel } from "@data/models/plant";
@@ -101,17 +102,41 @@ export class PlantRepository {
 		return plantModel;
 	}
 
-	listPlantImagesURLs(plantId: string, images: string[]) {
+	private listPlantImagesURLs(plantId: string, images: string[]) {
 		const bucket = storage.bucket();
 		const folderPublicURL = bucket.file(`${this.storageName}/${plantId}`).publicUrl();
 		return images.map((imageName) => `${folderPublicURL}/${imageName}`);
 	}
 
-	async storeImages(plantId: string, images: Express.Multer.File[]) {
+	async removePlantInformationFromAll(plantInformationName: string) {
+		const fieldName = `additional_informations.${plantInformationName}`;
+
+		const querySnapshot = await db.collection(this.colletionName).where(fieldName, ">", "").get();
+		const batchAmount = Math.ceil(querySnapshot.size / 500);
+		const batchs = (() => {
+			const batchs: firestore.WriteBatch[] = [];
+			for (let i = 0; i < batchAmount; i++) batchs.push(db.batch());
+			return batchs;
+		})();
+
+		await Promise.all(
+			batchs.map((batch, index) => {
+				const sliceStart = index * 500;
+				const sliceEnd = sliceStart + 500;
+				const docs = querySnapshot.docs.slice(sliceStart, sliceEnd);
+				docs.forEach((doc) => {
+					batch.update(doc.ref, { [fieldName]: firestore.FieldValue.delete() });
+				});
+				return batch.commit();
+			})
+		);
+	}
+
+	private async storeImages(plantId: string, images: Express.Multer.File[]) {
 		return await Promise.all(images.map((file) => this.storeImage(plantId, file)));
 	}
 
-	async storeImage(plantId: string, image: Express.Multer.File) {
+	private async storeImage(plantId: string, image: Express.Multer.File) {
 		const bucket = storage.bucket();
 		const file = bucket.file(
 			`${this.storageName}/${plantId}/${image.filename || image.originalname}`

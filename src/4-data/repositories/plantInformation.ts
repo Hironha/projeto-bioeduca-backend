@@ -37,7 +37,6 @@ export class PlantInformationRepository {
 	}
 
 	async list(_entity: IListPaginatedEntityInput) {
-		// const entityData = entity.export();
 		const snapshot = await db.collection(this.plantInformationsCollection).get();
 		const plantInformations: PlantInformationModel[] = [];
 		snapshot.docs.forEach((doc) => {
@@ -50,6 +49,23 @@ export class PlantInformationRepository {
 		return plantInformations;
 	}
 
+	async delete(id: string): Promise<PlantInformationModel> {
+		const docRef = db.collection(this.plantInformationsCollection).doc(id);
+		const snapshot = await docRef.get();
+		const snapshotData = snapshot.data();
+
+		if (!snapshotData) throw { code: "not-exists" };
+
+		const plantInformationData = snapshotData as Omit<IPlantInformationModel, "id">;
+		const plantInformation = new PlantInformationModel({ ...plantInformationData, id: docRef.id });
+
+		if (!snapshot.exists) throw { code: "not-exists" };
+
+		await docRef.delete();
+
+		return plantInformation;
+	}
+
 	async edit(
 		id: string,
 		editData: Partial<IPlantInformationEntity>
@@ -58,8 +74,8 @@ export class PlantInformationRepository {
 		const snapshot = await docRef.get();
 		if (!snapshot.exists) throw { code: "not-exists" };
 		await docRef.set({ ...editData });
-		const editedSnapshot = await docRef.get()
-		const editedSnapshoData =  editedSnapshot.data()
+		const editedSnapshot = await docRef.get();
+		const editedSnapshoData = editedSnapshot.data();
 		if (!editedSnapshoData) throw { code: "not-exists" };
 		const storedPlantInformation = editedSnapshoData as Omit<IPlantInformationModel, "id">;
 		return new PlantInformationModel({ ...storedPlantInformation, id: docRef.id });
