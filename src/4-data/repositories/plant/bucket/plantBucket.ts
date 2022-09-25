@@ -3,6 +3,17 @@ import { storage } from "@utils/database";
 export class PlantBucket {
 	constructor(private readonly storageName: string) {}
 
+	async deleteImages(plantId: string, images: string[]) {
+		const bucket = storage.bucket();
+
+		const deleteFilePromises = images.map((image) => {
+			const filePath = `${this.storageName}/${plantId}/${image}`;
+			return bucket.file(filePath).delete();
+		});
+
+		await Promise.all(deleteFilePromises);
+	}
+
 	async storeImages(plantId: string, images: Express.Multer.File[]): Promise<string[]> {
 		return await Promise.all(images.map((file) => this.storeImage(plantId, file)));
 	}
@@ -24,7 +35,7 @@ export class PlantBucket {
 		return file.publicUrl();
 	}
 
-  listPlantImagesURLs(plantId: string, images: string[]) {
+	listPlantImagesURLs(plantId: string, images: string[]) {
 		const bucket = storage.bucket();
 		const folderPublicURL = bucket.file(`${this.storageName}/${plantId}`).publicUrl();
 		return images.map((imageName) => `${folderPublicURL}/${imageName}`);

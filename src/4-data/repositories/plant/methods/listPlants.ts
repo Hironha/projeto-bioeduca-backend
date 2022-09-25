@@ -5,8 +5,6 @@ import { PlantPreviewModel } from "@data/models/plantPreview";
 import { type IPlantPreviewModel, type IStoredPlantModel } from "@data/interfaces/models/plant";
 import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
-import { type PlantBucket } from "../bucket/plantBucket";
-
 export class ListPlantsMethod {
 	constructor(private readonly collectionName: string) {}
 
@@ -48,9 +46,8 @@ export class ListPlantsMethod {
 	}
 
 	async listPreviewPaginated(
-		listEntity: IListPaginatedEntityInput,
-		plantBucket: PlantBucket
-	): Promise<{ hasMore: boolean; plantPreviewModels: PlantPreviewModel[] }> {
+		listEntity: IListPaginatedEntityInput
+	): Promise<{ hasMore: boolean; plantsPreview: PlantPreviewModel[] }> {
 		const listQuery = db
 			.collection(this.collectionName)
 			.limit(listEntity.perPage + 1)
@@ -60,15 +57,14 @@ export class ListPlantsMethod {
 		const listSnapshot = await this.getListSnapshot(listQuery, listEntity.lastKey);
 
 		const queriedSnapshots = listSnapshot.docs.slice(0, listEntity.perPage);
-		const plantPreviewModels: PlantPreviewModel[] = queriedSnapshots.map((plantDoc) => {
-			const { images, ...plantData } = plantDoc.data() as IPlantPreviewModel;
-			const imageURLS = plantBucket.listPlantImagesURLs(plantDoc.id, images ?? []);
-			return new PlantPreviewModel({ ...plantData, images: imageURLS, id: plantDoc.id });
+		const plantsPreview: PlantPreviewModel[] = queriedSnapshots.map((plantDoc) => {
+			const previewData = plantDoc.data() as IPlantPreviewModel;
+			return new PlantPreviewModel({ ...previewData, id: plantDoc.id });
 		});
 
 		return {
-			hasMore: listSnapshot.size > plantPreviewModels.length,
-			plantPreviewModels,
+			hasMore: listSnapshot.size > plantsPreview.length,
+			plantsPreview,
 		};
 	}
 }

@@ -24,14 +24,14 @@ export class ListPlantsPreviewUseCase
 
 			const listPlantPreviewsFlow = await this.listPlantPreviews(listPaginatedEntity);
 			if (listPlantPreviewsFlow.isLeft()) throw listPlantPreviewsFlow.export();
-			const { hasMore, plantPreviewModels } = listPlantPreviewsFlow.export();
+			const { hasMore, plantsPreview } = listPlantPreviewsFlow.export();
 
-			const lastPlantPreviewModel = plantPreviewModels.at(-1);
+			const lastPlantPreviewModel = plantsPreview.at(-1);
 
 			return {
 				lastKey: lastPlantPreviewModel?.id,
 				hasMore,
-				data: plantPreviewModels.map((plantPreview) => plantPreview.export()),
+				data: plantsPreview.map((plantPreview) => plantPreview.export()),
 			};
 		} catch (err) {
 			if (err instanceof Exception) throw err;
@@ -54,12 +54,12 @@ export class ListPlantsPreviewUseCase
 
 	private async listPlantPreviews(
 		listPaginatedEntity: IListPaginatedEntityInput
-	): Promise<Either<Exception, { hasMore: boolean; plantPreviewModels: PlantPreviewModel[] }>> {
+	): Promise<Either<Exception, { hasMore: boolean; plantsPreview: PlantPreviewModel[] }>> {
 		try {
-			const { hasMore, plantPreviewModels } = await this.plantRepository.listPreview(
+			const { hasMore, plantsPreview } = await this.plantRepository.listPreview(
 				listPaginatedEntity
 			);
-			return new Right({ hasMore, plantPreviewModels });
+			return new Right({ hasMore, plantsPreview });
 		} catch (err) {
 			return new Left(exceptions.dbError);
 		}
