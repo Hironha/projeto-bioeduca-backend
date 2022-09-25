@@ -4,8 +4,8 @@ import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPa
 import { PlantBucket } from "./bucket/plantBucket";
 import { ListPlantsMethod } from "./methods/listPlants";
 import { ConsultPlantMethod } from "./methods/consultPlant";
-import { CreatePlant as CreatePlantMethod } from "./methods/createPlant";
-import { UpdatePlant as UpdatePlantMethod } from "./methods/updatePlant";
+import { CreatePlantMethod } from "./methods/createPlant";
+import { UpdatePlantMethod } from "./methods/updatePlant";
 
 export class PlantRepository {
 	private readonly collectionName = "plants";

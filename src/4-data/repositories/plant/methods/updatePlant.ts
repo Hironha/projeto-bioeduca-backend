@@ -2,7 +2,7 @@ import { db } from "@utils/database";
 
 import { firestore } from "firebase-admin";
 
-export class UpdatePlant {
+export class UpdatePlantMethod {
 	private readonly maxBatchOperations = 500;
 
 	constructor(private readonly collectionName: string) {}

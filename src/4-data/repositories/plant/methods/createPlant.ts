@@ -5,7 +5,7 @@ import { type IPlantEntity } from "@data/interfaces/entities/plant";
 
 import { type PlantBucket } from "../bucket/plantBucket";
 
-export class CreatePlant {
+export class CreatePlantMethod {
 	constructor(private readonly collectionName: string) {}
 
 	async create(plantEntity: IPlantEntity, plantBucket: PlantBucket) {
