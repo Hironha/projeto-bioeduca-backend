@@ -7,7 +7,7 @@ import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPa
 
 import { type PlantBucket } from "../bucket/plantBucket";
 
-export class ListPlants {
+export class ListPlantsMethod {
 	constructor(private readonly collectionName: string) {}
 
 	private async getPlantSnapshot(plantId?: string) {

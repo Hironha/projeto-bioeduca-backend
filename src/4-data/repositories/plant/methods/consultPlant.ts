@@ -5,7 +5,7 @@ import { type IStoredPlantModel } from "@data/interfaces/models/plant";
 
 import { type PlantBucket } from "../bucket/plantBucket";
 
-export class ConsultPlant {
+export class ConsultPlantMethod {
 	constructor(private readonly collectionName: string) {}
 
 	async consultById(id: string, plantBucket: PlantBucket) {
