@@ -47,7 +47,7 @@ export class ConsultPlantUseCase implements IUseCase<ConsultPlantDTO, IConsultPl
 
 	private async consultPlantById(id: string): Promise<Either<Exception, PlantModel>> {
 		try {
-			const plant = await this.plantRepository.consultPlantById(id);
+			const plant = await this.plantRepository.consultById(id);
 			if (!plant) return new Left(exceptions.plantNotFound);
 			return new Right(plant);
 		} catch (err) {

@@ -51,7 +51,7 @@ export class ListPlantInformationsUseCase
 		entity: IListPaginatedEntityInput
 	): Promise<Either<Exception, PlantInformationModel[]>> {
 		try {
-			const plantInformations = await this.plantInformationRepository.list(entity);
+			const plantInformations = await this.plantInformationRepository.listAll();
 			return new Right(plantInformations);
 		} catch (err) {
 			return new Left(exceptions.dbError);

@@ -51,7 +51,7 @@ export class EditPlantInformationUseCase
 		editData: Partial<IPlantInformationEntity>
 	): Promise<Either<Exception, PlantInformationModel>> {
 		try {
-			const editedPlantInformation = await this.plantInformationRepository.edit(id, editData);
+			const editedPlantInformation = await this.plantInformationRepository.updateById(id, editData);
 			return new Right(editedPlantInformation);
 		} catch (err) {
 			return new Left(exceptions.dbError);

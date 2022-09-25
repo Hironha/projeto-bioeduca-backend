@@ -6,11 +6,11 @@ import { type IUseCase } from "@utils/useCase";
 import { type CreatePlantDTO } from "@business/dtos/plant/createPlant";
 import { type ICreatePlantOutput } from "@business/interfaces/ios/plant/createPlant";
 
-import { type PlantModel } from "@data/models/plant";
-import { type PlantInformationModel } from "@data/models/plantInformation";
-import { type IPlantEntity } from "@data/interfaces/entities/plant";
 import { PlantRepository } from "@data/repositories/plant";
 import { PlantInformationRepository } from "@data/repositories/plantInformation";
+import { type PlantModel } from "@data/models/plant";
+import { type IPlantEntity } from "@data/interfaces/entities/plant";
+import { type PlantInformationModel } from "@data/models/plantInformation";
 
 import { createPlantExceptions as exceptions } from "./exceptions/createPlant";
 
@@ -68,7 +68,7 @@ export class CreatePlantUseCase implements IUseCase<CreatePlantDTO, ICreatePlant
 
 	private async getAllPlantInformations(): Promise<Either<Exception, PlantInformationModel[]>> {
 		try {
-			const storedFields = await this.plantInformationRepository.list({ perPage: 1000 });
+			const storedFields = await this.plantInformationRepository.listAll();
 			return new Right(storedFields);
 		} catch (err) {
 			return new Left(exceptions.dbError);

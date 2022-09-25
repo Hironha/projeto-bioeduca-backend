@@ -26,7 +26,7 @@ export class PlantRepository {
 		this.bucket = new PlantBucket(this.storageName);
 	}
 
-	async consultPlantById(id: string) {
+	async consultById(id: string) {
 		return this.consultPlantMethod.consultById(id, this.bucket);
 	}
 

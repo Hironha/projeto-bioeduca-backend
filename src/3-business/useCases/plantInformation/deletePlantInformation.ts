@@ -38,7 +38,6 @@ export class DeletePlantInformationUseCase
 			if (deletePlantInformationFromPlantsFlow.isLeft())
 				throw deletePlantInformationFromPlantsFlow.export();
 
-      
 			return {};
 		} catch (err) {
 			if (err instanceof Exception) throw err;
@@ -62,7 +61,7 @@ export class DeletePlantInformationUseCase
 		id: string
 	): Promise<Either<Exception, PlantInformationModel>> {
 		try {
-			const deletedPlantInformation = await this.plantInformationRepository.delete(id);
+			const deletedPlantInformation = await this.plantInformationRepository.deleteById(id);
 			return new Right(deletedPlantInformation);
 		} catch (err) {
 			return new Left(exceptions.dbError);

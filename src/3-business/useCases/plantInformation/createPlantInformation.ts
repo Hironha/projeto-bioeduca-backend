@@ -5,8 +5,8 @@ import { type IUseCase } from "@utils/useCase";
 import { type CreatePlantInformationDTO } from "@business/dtos/plantInformation/createPlantInformation";
 import { type ICreatePlantInformationOutput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
-import { PlantInformationRepository } from "@data/repositories/plantInformation";
 import { PlantInformationModel } from "@data/models/plantInformation";
+import { PlantInformationRepository } from "@data/repositories/plantInformation";
 import { type IPlantInformationEntity } from "@data/interfaces/entities/plantInformation";
 
 import { createPlantInformationExceptions as exceptions } from "./exceptions/createPlantInformation";

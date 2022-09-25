@@ -5,3 +5,5 @@ export interface IPlantInformationModel {
 	updated_at: number;
 	created_at: number;
 }
+
+export interface IStoredPlantInformationModel extends Omit<IPlantInformationModel, "id"> {}
