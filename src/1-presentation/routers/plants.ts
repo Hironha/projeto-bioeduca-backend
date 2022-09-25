@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { handleRequest, handleMiddleware } from "@utils/controller";
+import { handleRequest } from "@utils/controller";
 
 import { ListPlantsController } from "@domain/controllers/plant/listPlants";
 import { CreatePlantController } from "@domain/controllers/plant/createPlant";
 import { ConsultPlantController } from "@domain/controllers/plant/consultPlant";
 import { ListPlantsPreviewController } from "@domain/controllers/plant/listPlantsPreview";
 import { DeletePlantController } from "@domain/controllers/plant/deletePlant";
+
+import { createFilesParser } from "@domain/middlewares/parseFiles";
 
 export const plantBaseURL = "/plants";
 
@@ -42,7 +44,7 @@ export const usePlantsRouter = () => {
 
 	router.post(
 		routes.create.path,
-		handleMiddleware(routes.create.controller),
+		createFilesParser("images"),
 		handleRequest(routes.create.controller)
 	);
 

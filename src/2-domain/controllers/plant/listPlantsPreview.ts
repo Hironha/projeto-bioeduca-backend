@@ -6,15 +6,14 @@ import { ListPlantsPreviewUseCase } from "@business/useCases/plant/listPlantsPre
 
 import type { ParsedQs } from "qs";
 import type { ParamsDictionary } from "express-serve-static-core";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 export class ListPlantsPreviewController implements Controller {
 	constructor(private readonly listPlantsPreviewUseCase = new ListPlantsPreviewUseCase()) {}
 
 	public async handleRequest(
 		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
-		next: NextFunction
+		res: Response<any, Record<string, any>>
 	): Promise<void> {
 		try {
 			const input = req.query as any;
@@ -28,10 +27,4 @@ export class ListPlantsPreviewController implements Controller {
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}
 	}
-
-	public async handleMiddleware(
-		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
-		next: NextFunction
-	): Promise<void> {}
 }

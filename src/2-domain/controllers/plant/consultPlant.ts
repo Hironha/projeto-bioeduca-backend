@@ -5,7 +5,7 @@ import { ConsultPlantDTO } from "@business/dtos/plant/consultPlant";
 import { ConsultPlantUseCase } from "@business/useCases/plant/consultPlant";
 
 import type { ParsedQs } from "qs";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 import type { ParamsDictionary } from "express-serve-static-core";
 
 export class ConsultPlantController implements Controller {
@@ -14,7 +14,6 @@ export class ConsultPlantController implements Controller {
 	public async handleRequest(
 		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
 		res: Response<any, Record<string, any>>,
-		next: NextFunction
 	): Promise<void> {
 		try {
 			const input = req.params;
@@ -27,10 +26,4 @@ export class ConsultPlantController implements Controller {
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}
 	}
-
-	public handleMiddleware(
-		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
-		next: NextFunction
-	): void | Promise<void> {}
 }
