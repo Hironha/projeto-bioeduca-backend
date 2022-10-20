@@ -1,6 +1,8 @@
 import type { IPlantEntity } from "@data/interfaces/entities/plant";
-import type { FormattedPlantModel } from "@data/interfaces/models/plant";
+import type { IPlantModel } from "@data/interfaces/models/plant";
 
-export interface ICreatePlantInput extends Omit<IPlantEntity, "created_at" | "updated_at"> {}
+export interface ICreatePlantDTOInput extends Omit<IPlantEntity, "created_at" | "updated_at"> {}
 
-export interface ICreatePlantOutput extends FormattedPlantModel {}
+export interface ICreatePlantDTOOutput extends IPlantEntity {}
+
+export interface ICreatePlantOutput extends IPlantModel {}

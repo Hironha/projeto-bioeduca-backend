@@ -1,16 +1,17 @@
 import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
+import { type IUseCase } from "@utils/useCase";
 
 import { ListPlantsDTO } from "@business/dtos/plant/listPlants";
 import { type IListPlantsOutput } from "@business/interfaces/ios/plant/listPlants";
 
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
 import { PlantRepository } from "@data/repositories/plant";
 import { type PlantModel } from "@data/models/plant";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 import { listPlantsExceptions as exceptions } from "./exceptions/listPlants";
 
-export class ListPlantsUseCase {
+export class ListPlantsUseCase implements IUseCase<ListPlantsDTO, IListPlantsOutput> {
 	constructor(private readonly plantRepository = new PlantRepository()) {}
 
 	async exec(input: ListPlantsDTO): Promise<IListPlantsOutput> {
@@ -21,12 +22,13 @@ export class ListPlantsUseCase {
 
 			const listPlantsFlow = await this.listPlants(listPlantsEntity);
 			if (listPlantsFlow.isLeft()) throw listPlantsFlow.export();
-			const plantModels = listPlantsFlow.export();
+			const { hasMore, plantModels } = listPlantsFlow.export();
 
-			const formattedPlantModels = this.formatPlantModels(plantModels);
-
+			const lastPlantModel = plantModels.at(-1);
 			return {
-				data: formattedPlantModels,
+				hasMore,
+				lastKey: lastPlantModel ? lastPlantModel.id : undefined,
+				data: plantModels.map((plantModel) => plantModel.export()),
 			};
 		} catch (err) {
 			if (err instanceof Exception) throw err;
@@ -34,17 +36,12 @@ export class ListPlantsUseCase {
 		}
 	}
 
-	private formatPlantModels(plantModels: PlantModel[]) {
-		return plantModels.map((plant) => plant.format());
-	}
-
 	private async createEntity(
 		dto: ListPlantsDTO
-	): Promise<Either<Exception, ListPaginatedInputEntity>> {
+	): Promise<Either<Exception, IListPaginatedEntityInput>> {
 		try {
 			await dto.validate();
-			const input = dto.export();
-			return new Right(new ListPaginatedInputEntity(input));
+			return new Right(dto.export());
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(exceptions.inputValidation.edit({ message }));
@@ -52,11 +49,11 @@ export class ListPlantsUseCase {
 	}
 
 	private async listPlants(
-		listEntity: ListPaginatedInputEntity
-	): Promise<Either<Exception, PlantModel[]>> {
+		listEntity: IListPaginatedEntityInput
+	): Promise<Either<Exception, { hasMore: boolean; plantModels: PlantModel[] }>> {
 		try {
-			const plantModels = await this.plantRepository.list(listEntity);
-			return new Right(plantModels);
+			const { hasMore, plantModels } = await this.plantRepository.list(listEntity);
+			return new Right({ hasMore, plantModels });
 		} catch (err) {
 			if (err instanceof Exception) return new Left(err);
 			return new Left(exceptions.dbError);

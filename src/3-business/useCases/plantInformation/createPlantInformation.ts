@@ -1,17 +1,19 @@
 import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
+import { type IUseCase } from "@utils/useCase";
 
 import { type CreatePlantInformationDTO } from "@business/dtos/plantInformation/createPlantInformation";
-
-import { PlantInformationEntity } from "@data/entities/plantInformation";
-import { PlantInformationRepository } from "@data/repositories/plantInformation";
-import { PlantInformationModel } from "@data/models/plantInformation";
-
 import { type ICreatePlantInformationOutput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
+
+import { PlantInformationModel } from "@data/models/plantInformation";
+import { PlantInformationRepository } from "@data/repositories/plantInformation";
+import { type IPlantInformationEntity } from "@data/interfaces/entities/plantInformation";
 
 import { createPlantInformationExceptions as exceptions } from "./exceptions/createPlantInformation";
 
-export class CreatePlantInformationUseCase {
+export class CreatePlantInformationUseCase
+	implements IUseCase<CreatePlantInformationDTO, ICreatePlantInformationOutput>
+{
 	constructor(private readonly plantInformationRepository = new PlantInformationRepository()) {}
 
 	async exec(input: CreatePlantInformationDTO): Promise<ICreatePlantInformationOutput> {
@@ -33,17 +35,10 @@ export class CreatePlantInformationUseCase {
 
 	private async getEntity(
 		dto: CreatePlantInformationDTO
-	): Promise<Either<Exception, PlantInformationEntity>> {
+	): Promise<Either<Exception, IPlantInformationEntity>> {
 		try {
 			await dto.validate();
-			const inputData = dto.export();
-			const currTimestamp = new Date().getTime();
-			const entity = new PlantInformationEntity({
-				...inputData,
-				created_at: currTimestamp,
-				updated_at: currTimestamp,
-			});
-			return new Right(entity);
+			return new Right(dto.export());
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(new Exception(exceptions.inputValidation).edit({ message }));
@@ -51,14 +46,17 @@ export class CreatePlantInformationUseCase {
 	}
 
 	private async createPlantInformation(
-		entity: PlantInformationEntity
+		entity: IPlantInformationEntity
 	): Promise<Either<Exception, PlantInformationModel>> {
 		try {
 			const createdPlantInformation = await this.plantInformationRepository.create(entity);
 			return new Right(createdPlantInformation);
 		} catch (err) {
 			if (err instanceof Left<Exception>) return err;
-			return new Left(new Exception(exceptions.dbError));
+			if ((err as Exception)?.code === "duplicated-field_name") {
+				return new Left(exceptions.duplicatedFieldName);
+			}
+			return new Left(exceptions.dbError);
 		}
 	}
 }

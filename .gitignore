@@ -6,3 +6,5 @@ node_modules
 
 # ignore firebase key
 *.secret.json
+
+dist

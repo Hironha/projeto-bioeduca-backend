@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { handleRequest } from "@utils/controller";
 
+import { authenticationMiddleware } from "@domain/middlewares/authentication";
+
 import { CreatePlantInformationController } from "@domain/controllers/plantInformation/createPlantInformation";
 import { ListPlantInformationsController } from "@domain/controllers/plantInformation/listPlantInformations";
+import { EditPlantInformationController } from "@domain/controllers/plantInformation/editPlantInformation";
+import { DeletePlantInformationController } from "@domain/controllers/plantInformation/deletePlantInformation";
 
 export const plantInformationBaseURL = "/plant-informations";
 
@@ -20,9 +24,21 @@ export const usePlantInformationRouter = () => {
 			path: plantInformationBaseURL,
 			controller: new ListPlantInformationsController(),
 		},
+		edit: {
+			method: "PUT",
+			path: `${plantInformationBaseURL}/:id`,
+			controller: new EditPlantInformationController(),
+		},
+		delete: {
+			method: 'DELETE',
+			path: `${plantInformationBaseURL}/:id`,
+			controller: new DeletePlantInformationController()
+		}
 	};
 
-	router.post(routes.create.path, handleRequest(routes.create.controller));
+	router.delete(routes.delete.path, authenticationMiddleware, handleRequest(routes.delete.controller))
+	router.put(routes.edit.path, authenticationMiddleware, handleRequest(routes.edit.controller));
+	router.post(routes.create.path, authenticationMiddleware, handleRequest(routes.create.controller));
 	router.get(routes.list.path, handleRequest(routes.list.controller));
 
 	return router;

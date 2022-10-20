@@ -1,17 +1,15 @@
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
-import { PlantInformationValidations } from "@data/interfaces/entities/plantInformation";
-import { type ICreatePlantInformationInput } from "@business/interfaces/ios/plantInformation/createPlantInformation";
+import {
+	type ICreatePlantInformationDTOInput,
+	type ICreatePlantInformationDTOOutput,
+} from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
-	extends Validator<ICreatePlantInformationInput>
-	implements ICreatePlantInformationInput
+	extends Validator<ICreatePlantInformationDTOInput>
+	implements ICreatePlantInformationDTOInput
 {
-	@IsEnum(PlantInformationValidations)
-	@IsNotEmpty()
-	validation: PlantInformationValidations;
-
 	@IsString()
 	@IsNotEmpty()
 	field_name: string;
@@ -20,15 +18,19 @@ export class CreatePlantInformationDTO
 	@IsNotEmpty()
 	description: string;
 
-	constructor(input: ICreatePlantInformationInput) {
+	constructor(input: ICreatePlantInformationDTOInput) {
 		super(input);
 	}
 
-	export(): ICreatePlantInformationInput {
+	export(): ICreatePlantInformationDTOOutput {
+		const currTimestamp = new Date().getTime();
+
 		return {
-			field_name: this.field_name,
-			validation: this.validation,
-			description: this.description,
+			field_name: this.field_name.trim(),
+			description: this.description.trim(),
+
+			created_at: currTimestamp,
+			updated_at: currTimestamp,
 		};
 	}
 }

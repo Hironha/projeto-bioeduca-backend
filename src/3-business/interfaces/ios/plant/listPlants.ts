@@ -1,7 +1,17 @@
-import { type FormattedPlantModel } from "@data/interfaces/models/plant";
+import { type IPlantModel } from "@data/interfaces/models/plant";
 
-export interface IListPlantsInput {}
+export interface IListPlantsDTOInput {
+	lastKey?: string;
+	perPage: string;
+}
+
+export interface IListPlantsDTOOutput {
+	lastKey?: string;
+	perPage: number;
+}
 
 export interface IListPlantsOutput {
-	data: FormattedPlantModel[];
+	lastKey?: string;
+	hasMore: boolean;
+	data: IPlantModel[];
 }

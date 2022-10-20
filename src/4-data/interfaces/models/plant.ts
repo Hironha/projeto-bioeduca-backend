@@ -1,19 +1,16 @@
-import { IPlantEntity } from "../entities/plant";
+export type PlantModelFields = { [field_name: string]: string };
 
-export type PlantModelFields = { [field_name: string]: any };
-
-export interface IPlantModel extends Omit<IPlantEntity, "fields" | "images"> {
+export interface IPlantModel {
 	id: string;
-	images?: string[]
-	fields: PlantModelFields;
+	images?: string[];
+	scientific_name: string;
+	popular_name: string;
+	additional_informations: PlantModelFields;
+	created_at: number;
+	updated_at: number;
 }
 
-export type StoredPlantModel = Omit<IPlantModel, "fields" | 'id' | 'images'> & {
-	[field_name: string]: any;
-};
+export interface IPlantPreviewModel
+	extends Pick<IPlantModel, "id" | "popular_name" | "scientific_name" | 'images'> {}
 
-export type FormattedPlantModel = Omit<IPlantModel, "fields"> & {
-	plant_informations: {
-		[field_name: string]: any;
-	};
-};
+export interface IStoredPlantModel extends Omit<IPlantModel, "id"> {}

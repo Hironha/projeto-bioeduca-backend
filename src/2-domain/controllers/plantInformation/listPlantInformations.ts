@@ -5,7 +5,7 @@ import { ListPlantInfomationsDTO } from "@business/dtos/plantInformation/listPla
 
 import { type ParsedQs } from "qs";
 import { type ParamsDictionary } from "express-serve-static-core";
-import { type Request, type Response, type NextFunction } from "express";
+import { type Request, type Response } from "express";
 import { ListPlantInformationsUseCase } from "@business/useCases/plantInformation/listPlantInformations";
 
 export class ListPlantInformationsController implements Controller {
@@ -13,8 +13,7 @@ export class ListPlantInformationsController implements Controller {
 
 	public async handleRequest(
 		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
-		next: NextFunction
+		res: Response<any, Record<string, any>>
 	): Promise<void> {
 		try {
 			const input = req.body;
@@ -27,10 +26,4 @@ export class ListPlantInformationsController implements Controller {
 			res.status(exception.httpStatus).json(exception.toResponse());
 		}
 	}
-
-	public async handleMiddleware(
-		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
-		next: NextFunction
-	): Promise<void> {}
 }

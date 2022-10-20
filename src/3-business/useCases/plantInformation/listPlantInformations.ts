@@ -1,21 +1,24 @@
 import { Exception } from "@utils/exception";
 import { Left, Right, type Either } from "@utils/flow";
+import { type IUseCase } from "@utils/useCase";
 
 import { type ListPlantInfomationsDTO } from "@business/dtos/plantInformation/listPlantInformations";
 import { type IListPlantInformationsOutput } from "@business/interfaces/ios/plantInformation/listPlantInformation";
 
 import { PlantInformationModel } from "@data/models/plantInformation";
 import { PlantInformationRepository } from "@data/repositories/plantInformation";
-import { ListPaginatedInputEntity } from "@data/entities/listPaginatedInput";
+import { type IListPaginatedEntityInput } from "@data/interfaces/entities/listPaginatedInput";
 
 import { listPlantInformationsExceptions as exceptions } from "./exceptions/listPlantInformations";
 
-export class ListPlantInformationsUseCase {
+export class ListPlantInformationsUseCase
+	implements IUseCase<ListPlantInfomationsDTO, IListPlantInformationsOutput>
+{
 	constructor(private readonly plantInformationRepository = new PlantInformationRepository()) {}
 
 	async exec(input: ListPlantInfomationsDTO): Promise<IListPlantInformationsOutput> {
 		try {
-			const getEntityFlow = await this.getEntity(input);
+			const getEntityFlow = await this.createEntity(input);
 			if (getEntityFlow.isLeft()) throw getEntityFlow.export();
 			const entity = getEntityFlow.export();
 
@@ -32,14 +35,12 @@ export class ListPlantInformationsUseCase {
 		}
 	}
 
-	async getEntity(
+	private async createEntity(
 		dto: ListPlantInfomationsDTO
-	): Promise<Either<Exception, ListPaginatedInputEntity>> {
+	): Promise<Either<Exception, IListPaginatedEntityInput>> {
 		try {
 			await dto.validate();
-			const input = dto.export();
-			const entity = new ListPaginatedInputEntity(input);
-			return new Right(entity);
+			return new Right({ perPage: 10000 });
 		} catch (err) {
 			const message = (err as Error).message;
 			return new Left(exceptions.inputValidation.edit({ message }));
@@ -47,10 +48,10 @@ export class ListPlantInformationsUseCase {
 	}
 
 	async listPlantInformations(
-		entity: ListPaginatedInputEntity
+		entity: IListPaginatedEntityInput
 	): Promise<Either<Exception, PlantInformationModel[]>> {
 		try {
-			const plantInformations = await this.plantInformationRepository.list(entity);
+			const plantInformations = await this.plantInformationRepository.listAll();
 			return new Right(plantInformations);
 		} catch (err) {
 			return new Left(exceptions.dbError);
