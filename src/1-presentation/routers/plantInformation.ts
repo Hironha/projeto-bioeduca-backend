@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { handleRequest } from "@utils/controller";
 
+import { authenticationMiddleware } from "@domain/middlewares/authentication";
+
 import { CreatePlantInformationController } from "@domain/controllers/plantInformation/createPlantInformation";
 import { ListPlantInformationsController } from "@domain/controllers/plantInformation/listPlantInformations";
 import { EditPlantInformationController } from "@domain/controllers/plantInformation/editPlantInformation";
@@ -34,9 +36,9 @@ export const usePlantInformationRouter = () => {
 		}
 	};
 
-	router.delete(routes.delete.path, handleRequest(routes.delete.controller))
-	router.put(routes.edit.path, handleRequest(routes.edit.controller));
-	router.post(routes.create.path, handleRequest(routes.create.controller));
+	router.delete(routes.delete.path, authenticationMiddleware, handleRequest(routes.delete.controller))
+	router.put(routes.edit.path, authenticationMiddleware, handleRequest(routes.edit.controller));
+	router.post(routes.create.path, authenticationMiddleware, handleRequest(routes.create.controller));
 	router.get(routes.list.path, handleRequest(routes.list.controller));
 
 	return router;

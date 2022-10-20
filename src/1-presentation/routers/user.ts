@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { handleRequest } from "@utils/controller";
 
+import { authenticationMiddleware } from "@domain/middlewares/authentication";
+
 import { CreateUserController } from "@domain/controllers/user/createUser";
 
 export const userBaseURL = "/users";
@@ -16,7 +18,7 @@ export const useUserRouter = () => {
 		},
 	};
 
-	router.post(routes.create.path, handleRequest(routes.create.controller));
+	router.post(routes.create.path, authenticationMiddleware, handleRequest(routes.create.controller));
 
 	return router;
 };
