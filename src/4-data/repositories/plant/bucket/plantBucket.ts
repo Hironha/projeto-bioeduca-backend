@@ -3,15 +3,19 @@ import { storage } from "@utils/database";
 export class PlantBucket {
 	constructor(private readonly storageName: string) {}
 
-	async deleteImages(plantId: string, images: string[]) {
+	async deleteImages(plantId: string, images?: string[]) {
 		const bucket = storage.bucket();
 
-		const deleteFilePromises = images.map((image) => {
-			const filePath = `${this.storageName}/${plantId}/${image}`;
-			return bucket.file(filePath).delete();
-		});
+		if (images === undefined) {
+			await bucket.deleteFiles({ prefix: `${this.storageName}/${plantId}` });
+		} else {
+			const deleteFilePromises = images.map((image) => {
+				const filePath = `${this.storageName}/${plantId}/${image}`;
+				return bucket.file(filePath).delete();
+			});
 
-		await Promise.all(deleteFilePromises);
+			await Promise.all(deleteFilePromises);
+		}
 	}
 
 	async storeImages(plantId: string, images: Express.Multer.File[]): Promise<string[]> {

@@ -17,7 +17,7 @@ app.use(helmet({ referrerPolicy: { policy: "no-referrer" } }));
 app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
-const hostname: string = process.env.NODE_ENV === "development" ? "localhost" : "localhost";
+const hostname: string = process.env.NODE_ENV === "development" ? "192.168.100.11" : "localhost";
 
 const baseUrl = `${hostname}:${port}`;
 

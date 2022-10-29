@@ -1,8 +1,8 @@
 import { Left, Right, type Either } from "@utils/flow";
-import { isString } from "class-validator";
 import { Exception } from "@utils/exception";
 import { type IUseCase } from "@utils/useCase";
 
+import { validatePlantFields } from "@business/useCases/plant/common/validatePlantFields";
 import { type CreatePlantDTO } from "@business/dtos/plant/createPlant";
 import { type ICreatePlantOutput } from "@business/interfaces/ios/plant/createPlant";
 
@@ -80,32 +80,17 @@ export class CreatePlantUseCase implements IUseCase<CreatePlantDTO, ICreatePlant
 		plantInformations: PlantInformationModel[]
 	): Promise<Either<Exception, null>> {
 		try {
-			Object.entries(plantEntity.additional_informations).forEach(([fieldName, value]) => {
-				const field = plantInformations.find(
-					(plantInformation) => plantInformation.field_name === fieldName
-				);
-
-				if (!field) {
-					throw exceptions.plantFieldNotFound.edit({
-						message: `Could not find a registered plant information for the field: ${fieldName}.`,
-					});
-				}
-
-				if (!this.validatePlantField(value)) {
-					throw exceptions.inputValidation.edit({
-						message: `The information ${field.field_name} must be a string`,
-					});
-				}
-			});
-
+			const result = await validatePlantFields(
+				plantEntity.additional_informations,
+				plantInformations
+			);
+			if (!result.valid) {
+				return new Left(exceptions.inputValidation.edit({ message: result.message }));
+			}
 			return new Right(null);
 		} catch (err) {
 			if (err instanceof Exception) return new Left(err);
 			return new Left(exceptions.inputValidation);
 		}
-	}
-
-	private validatePlantField(value: string) {
-		return isString(value);
 	}
 }
