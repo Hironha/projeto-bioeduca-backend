@@ -76,16 +76,24 @@ export class PlantRepository {
 		return this.updatePlantMethod.removeFieldFromPlants(fieldName);
 	}
 
-	async updateById(id: string, updateData: Partial<Omit<IPlantEntity, "created_at">>) {
-		const { images, ...plantData } = updateData;
+	async updateById(
+		id: string,
+		updateData: Partial<Omit<IPlantEntity, "created_at">> & {
+			delete_images?: string[];
+		}
+	) {
+		const { images, delete_images, ...plantData } = updateData;
 		const imageNames = images?.map((image) => image.filename || image.originalname) ?? [];
 		const updatedPlant = await this.updatePlantMethod.updatePlant(id, {
 			...plantData,
 			images: imageNames,
 		});
 
+		if (delete_images) {
+			await this.bucket.deleteImages(updatedPlant.id, delete_images);
+		}
+
 		if (images) {
-			await this.bucket.deleteImages(updatedPlant.id);
 			await this.bucket.storeImages(updatedPlant.id, images);
 		}
 

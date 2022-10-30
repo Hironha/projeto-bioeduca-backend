@@ -33,6 +33,10 @@ export class UpdatePlantDTO
 	@IsObject()
 	additional_informations: IPlantEntity["additional_informations"];
 
+	@IsOptional()
+	@IsString({ each: true })
+	delete_images: string[];
+
 	@ImageArray({ maxCount: 5, mime: ["image/jpeg", "image/jpg", "image/png"] })
 	images?: Express.Multer.File[];
 
