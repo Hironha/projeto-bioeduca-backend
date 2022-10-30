@@ -17,8 +17,9 @@ export class UpdatePlantController implements Controller {
 	): Promise<void> {
 		try {
 			const input = req.body;
+			const { plantId } = req.params;
 			const files = req.files;
-			const dto = UpdatePlantDTO.fromSerialized({ ...input, images: files });
+			const dto = UpdatePlantDTO.fromSerialized({ ...input, images: files, id: plantId });
 			const updatePlantOutput = await this.updatePlantUseCase.exec(dto);
 			res.status(200).json(updatePlantOutput);
 		} catch (err) {

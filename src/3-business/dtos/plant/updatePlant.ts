@@ -9,8 +9,10 @@ import {
 } from "@business/interfaces/ios/plant/updatePlant";
 import { type IPlantEntity } from "@data/interfaces/entities/plant";
 
-interface ISerializedInput extends Omit<IUpdatePlantDTOInput, "additional_informations"> {
+interface ISerializedInput
+	extends Omit<IUpdatePlantDTOInput, "additional_informations" | "delete_images"> {
 	additional_informations: string;
+	delete_images: string;
 }
 
 export class UpdatePlantDTO
@@ -54,13 +56,27 @@ export class UpdatePlantDTO
 			}
 		})(input?.additional_informations);
 
-		return new UpdatePlantDTO({ ...input, additional_informations: additionalInformations });
+		const deleteImages = ((deleteImages?: string): string[] => {
+			try {
+				const parsedDeleteImages = JSON.parse(deleteImages ?? "");
+				return Array.isArray(parsedDeleteImages) ? parsedDeleteImages : []
+			} catch (err) {
+				return [];
+			}
+		})(input?.delete_images);
+
+		return new UpdatePlantDTO({
+			...input,
+			delete_images: deleteImages,
+			additional_informations: additionalInformations,
+		});
 	}
 
 	export(): IUpdatePlantDTOOutput {
 		return {
 			id: this.id,
 			images: this.images,
+			delete_images: this.delete_images,
 			popular_name: this.popular_name.trim(),
 			scientific_name: this.scientific_name.trim(),
 			additional_informations: this.parseAdditionalInformations(),

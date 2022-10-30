@@ -83,19 +83,26 @@ export class PlantRepository {
 		}
 	) {
 		const { images, delete_images, ...plantData } = updateData;
-		const imageNames = images?.map((image) => image.filename || image.originalname) ?? [];
-		const updatedPlant = await this.updatePlantMethod.updatePlant(id, {
-			...plantData,
-			images: imageNames,
+		if (delete_images) await this.bucket.deleteImages(id, delete_images);
+
+		if (images) await this.bucket.storeImages(id, images);
+
+		const currentStoredPlantData = await this.consultPlantMethod.consultById(id, this.bucket);
+		if (!currentStoredPlantData) throw new Error();
+
+		const filteredStoredPlantImages = currentStoredPlantData.images?.filter((imgSRC) => {
+			const imgName = imgSRC.split("/").slice(-1).join();
+			return delete_images?.includes(imgName) ? false : true;
+		});
+		const storedImagesName = filteredStoredPlantImages?.map((src) => {
+			return src.split("/").slice(-1).join();
 		});
 
-		if (delete_images) {
-			await this.bucket.deleteImages(updatedPlant.id, delete_images);
-		}
-
-		if (images) {
-			await this.bucket.storeImages(updatedPlant.id, images);
-		}
+		const newImagesNames = images?.map((image) => image.filename || image.originalname) ?? [];
+		const updatedPlant = await this.updatePlantMethod.updatePlant(id, {
+			...plantData,
+			images: storedImagesName?.concat(newImagesNames) ?? newImagesNames,
+		});
 
 		return updatedPlant;
 	}
