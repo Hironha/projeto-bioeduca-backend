@@ -68,11 +68,42 @@ export class PlantRepository {
 	async deleteById(id: string): Promise<PlantModel> {
 		const deletedPlant = await this.deletePlantMethod.deleteById(id);
 		await this.bucket.deleteImages(deletedPlant.id, deletedPlant.images ?? []);
-		return deletedPlant
+		return deletedPlant;
 	}
 
 	async removePlantInformationFromAll(plantInformationName: string) {
 		const fieldName = `additional_informations.${plantInformationName}`;
 		return this.updatePlantMethod.removeFieldFromPlants(fieldName);
+	}
+
+	async updateById(
+		id: string,
+		updateData: Partial<Omit<IPlantEntity, "created_at">> & {
+			delete_images?: string[];
+		}
+	) {
+		const { images, delete_images, ...plantData } = updateData;
+		if (delete_images) await this.bucket.deleteImages(id, delete_images);
+
+		if (images) await this.bucket.storeImages(id, images);
+
+		const currentStoredPlantData = await this.consultPlantMethod.consultById(id, this.bucket);
+		if (!currentStoredPlantData) throw new Error();
+
+		const filteredStoredPlantImages = currentStoredPlantData.images?.filter((imgSRC) => {
+			const imgName = imgSRC.split("/").slice(-1).join();
+			return delete_images?.includes(imgName) ? false : true;
+		});
+		const storedImagesName = filteredStoredPlantImages?.map((src) => {
+			return src.split("/").slice(-1).join();
+		});
+
+		const newImagesNames = images?.map((image) => image.filename || image.originalname) ?? [];
+		const updatedPlant = await this.updatePlantMethod.updatePlant(id, {
+			...plantData,
+			images: storedImagesName?.concat(newImagesNames) ?? newImagesNames,
+		});
+
+		return updatedPlant;
 	}
 }

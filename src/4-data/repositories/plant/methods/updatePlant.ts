@@ -1,6 +1,8 @@
+import { firestore } from "firebase-admin";
 import { db } from "@utils/database";
 
-import { firestore } from "firebase-admin";
+import { type IStoredPlantModel } from "@data/interfaces/models/plant";
+import { PlantModel } from "@data/models/plant";
 
 export class UpdatePlantMethod {
 	private readonly maxBatchOperations = 500;
@@ -42,5 +44,14 @@ export class UpdatePlantMethod {
 		await this.runInBatch(querySnapshot, (batch, doc) => {
 			batch.update(doc.ref, { [fieldName]: firestore.FieldValue.delete() });
 		});
+	}
+
+	async updatePlant(plantId: string, plantData: Partial<IStoredPlantModel>) {
+		const docRef = db.collection(this.collectionName).doc(plantId);
+		await docRef.update(plantData);
+		const snapshot = await docRef.get();
+		const data = snapshot.data() as IStoredPlantModel;
+		
+		return new PlantModel({ ...data, id: docRef.id });
 	}
 }
