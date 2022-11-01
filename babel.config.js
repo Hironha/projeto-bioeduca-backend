@@ -19,11 +19,12 @@ module.exports = {
 					"@domain": "./src/2-domain",
 					"@business": "./src/3-business",
 					"@data": "./src/4-data",
-          "@utils": "./src/utils"
+					"@utils": "./src/utils",
 				},
 			},
 		],
-		["@babel/plugin-proposal-decorators", { legacy: true }],
+		["@babel/plugin-proposal-decorators", { version: "legacy" }],
+		["@babel/plugin-proposal-class-properties", { loose: true }],
 	],
 	ignore: ["**/*.spec.ts"],
 };
