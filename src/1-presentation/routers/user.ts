@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleRequest } from "@utils/controller";
+import { configureRouter, type Route } from "@utils/route";
 
 import { authenticationMiddleware } from "@domain/middlewares/authentication";
 
@@ -10,15 +10,16 @@ export const userBaseURL = "/users";
 export const useUserRouter = () => {
 	const router = Router({ caseSensitive: true });
 
-	const routes = {
+	const routes: Record<string, Route> = {
 		create: {
 			method: "POST",
 			path: userBaseURL,
+			middlewares: [authenticationMiddleware],
 			controller: new CreateUserController(),
 		},
 	};
 
-	router.post(routes.create.path, authenticationMiddleware, handleRequest(routes.create.controller));
+	configureRouter(router, routes);
 
 	return router;
 };

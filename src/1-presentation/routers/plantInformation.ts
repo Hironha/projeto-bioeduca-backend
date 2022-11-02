@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleRequest } from "@utils/controller";
+import { configureRouter, type Route } from "@utils/route";
 
 import { authenticationMiddleware } from "@domain/middlewares/authentication";
 
@@ -13,10 +13,11 @@ export const plantInformationBaseURL = "/plant-informations";
 export const usePlantInformationRouter = () => {
 	const router = Router({ caseSensitive: true });
 
-	const routes = {
+	const routes: Record<string, Route> = {
 		create: {
 			method: "POST",
 			path: plantInformationBaseURL,
+			middlewares: [authenticationMiddleware],
 			controller: new CreatePlantInformationController(),
 		},
 		list: {
@@ -27,19 +28,18 @@ export const usePlantInformationRouter = () => {
 		edit: {
 			method: "PUT",
 			path: `${plantInformationBaseURL}/:id`,
+			middlewares: [authenticationMiddleware],
 			controller: new EditPlantInformationController(),
 		},
 		delete: {
-			method: 'DELETE',
+			method: "DELETE",
 			path: `${plantInformationBaseURL}/:id`,
-			controller: new DeletePlantInformationController()
-		}
+			middlewares: [authenticationMiddleware],
+			controller: new DeletePlantInformationController(),
+		},
 	};
 
-	router.delete(routes.delete.path, authenticationMiddleware, handleRequest(routes.delete.controller))
-	router.put(routes.edit.path, authenticationMiddleware, handleRequest(routes.edit.controller));
-	router.post(routes.create.path, authenticationMiddleware, handleRequest(routes.create.controller));
-	router.get(routes.list.path, handleRequest(routes.list.controller));
+	configureRouter(router, routes);
 
 	return router;
 };

@@ -7,10 +7,7 @@ import {
 	type IDeletePlantDTOInput,
 } from "@business/interfaces/ios/plant/deletePlant";
 
-export class DeletePlantDTO
-	extends Validator<IDeletePlantDTOInput>
-	implements IDeletePlantDTOInput
-{
+export class DeletePlantDTO extends Validator implements IDeletePlantDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	id: string;

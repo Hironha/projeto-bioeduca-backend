@@ -15,10 +15,7 @@ interface ISerializedInput
 	delete_images: string;
 }
 
-export class UpdatePlantDTO
-	extends Validator<IUpdatePlantDTOInput>
-	implements IUpdatePlantDTOInput
-{
+export class UpdatePlantDTO extends Validator implements IUpdatePlantDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	id: string;

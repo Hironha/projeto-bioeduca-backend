@@ -7,7 +7,7 @@ import {
 } from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
-	extends Validator<ICreatePlantInformationDTOInput>
+	extends Validator
 	implements ICreatePlantInformationDTOInput
 {
 	@IsString()

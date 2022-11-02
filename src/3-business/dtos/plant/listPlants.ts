@@ -8,7 +8,7 @@ import {
 	type IListPlantsDTOOutput,
 } from "@business/interfaces/ios/plant/listPlants";
 
-export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements IListPlantsDTOInput {
+export class ListPlantsDTO extends Validator implements IListPlantsDTOInput {
 	@IsOptional()
 	@IsString()
 	lastKey?: string;

@@ -7,7 +7,7 @@ import {
 import { Validator } from "@utils/validator";
 
 export class DeletePlantInformationDTO
-	extends Validator<IDeletePlantInformationDTOInput>
+	extends Validator
 	implements IDeletePlantInformationDTOInput
 {
 	@IsNotEmpty()

@@ -6,10 +6,7 @@ import {
 	type IConsultPlantDTOInput,
 } from "@business/interfaces/ios/plant/consultPlant";
 
-export class ConsultPlantDTO
-	extends Validator<IConsultPlantDTOInput>
-	implements IConsultPlantDTOInput
-{
+export class ConsultPlantDTO extends Validator implements IConsultPlantDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	plantId: string;

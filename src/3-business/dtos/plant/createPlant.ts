@@ -14,10 +14,7 @@ interface ISerializedInput extends Omit<ICreatePlantDTOInput, "additional_inform
 	additional_informations: string;
 }
 
-export class CreatePlantDTO
-	extends Validator<ICreatePlantDTOInput>
-	implements ICreatePlantDTOInput
-{
+export class CreatePlantDTO extends Validator implements ICreatePlantDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	popular_name: string;
