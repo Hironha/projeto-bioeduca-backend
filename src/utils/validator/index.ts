@@ -1,6 +1,6 @@
 import { validateOrReject, ValidationError, ValidatorOptions } from "class-validator";
 
-export abstract class Validator<T> {
+export abstract class Validator {
 	public async validate(options?: ValidatorOptions) {
 		try {
 			await validateOrReject(this, options);
