@@ -42,7 +42,7 @@ export function NumberString(
 			constraints: [object],
 			options: validationOptions,
 			validator: {
-				validate(value: any, args: ValidationArguments) {
+				validate(value: any, _: ValidationArguments) {
 					const numericValue = Number(value);
 					if (isNaN(numericValue)) {
 						validationError = "isNumeric";
