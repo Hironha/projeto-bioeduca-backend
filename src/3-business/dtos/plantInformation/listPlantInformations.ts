@@ -7,7 +7,7 @@ export class ListPlantInfomationsDTO
 	implements IListPlantInformationsInput
 {
 	constructor(input: IListPlantInformationsInput) {
-		super(input);
+		super();
 	}
 
 	export(): IListPlantInformationsInput {

@@ -19,7 +19,9 @@ export class EditPlantInformationDTO
 	description: string;
 
 	constructor(input: IEditPlantInformationDTOInput) {
-		super(input);
+		super();
+		this.id = input.id;
+		this.description = input.description;
 	}
 
 	export(): IEditPlantInformationDTOOutput {

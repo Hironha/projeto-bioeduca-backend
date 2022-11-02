@@ -14,8 +14,9 @@ export class ConsultPlantDTO
 	@IsString()
 	plantId: string;
 
-	constructor(input: Partial<IConsultPlantDTOInput>) {
-		super(input);
+	constructor(input: IConsultPlantDTOInput) {
+		super();
+		this.plantId = input.plantId;
 	}
 
 	export(): IConsultPlantDTOOutput {

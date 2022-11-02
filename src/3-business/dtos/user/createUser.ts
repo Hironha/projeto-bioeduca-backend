@@ -14,8 +14,10 @@ export class CreateUserDTO extends Validator<ICreateUserDTOInput> implements ICr
 	@IsString()
 	password: string;
 
-	constructor(input: Partial<ICreateUserDTOInput>) {
-		super(input);
+	constructor(input: ICreateUserDTOInput) {
+		super();
+		this.email = input.email;
+		this.password = input.password;
 	}
 
 	export(): ICreateUserDTOOuput {

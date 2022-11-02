@@ -19,7 +19,9 @@ export class ListPlantsDTO extends Validator<IListPlantsDTOInput> implements ILi
 	perPage: string;
 
 	constructor(input: IListPlantsDTOInput) {
-		super(input);
+		super();
+		this.lastKey = input.lastKey;
+		this.perPage = input.perPage;
 	}
 
 	export(): IListPlantsDTOOutput {

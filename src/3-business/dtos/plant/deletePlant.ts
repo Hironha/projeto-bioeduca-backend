@@ -16,7 +16,8 @@ export class DeletePlantDTO
 	id: string;
 
 	constructor(input: IDeletePlantDTOInput) {
-		super(input);
+		super();
+		this.id = input.id;
 	}
 
 	export(): IDeletePlantDTOOutput {

@@ -21,8 +21,10 @@ export class ListPlantsPreviewDTO
 	@NumberString({ isInteger: true, min: 1, max: 20 })
 	perPage: string;
 
-	constructor(input: Partial<IListPlantsPreviewDTOInput>) {
-		super(input);
+	constructor(input: IListPlantsPreviewDTOInput) {
+		super();
+		this.lastKey = input.lastKey;
+		this.perPage = input.perPage;
 	}
 
 	export(): IListPlantsPreviewDTOOutput {

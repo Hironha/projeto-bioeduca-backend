@@ -33,11 +33,15 @@ export class CreatePlantDTO
 	@ImageArray({ maxCount: 5, mime: ["image/jpeg", "image/jpg", "image/png"] })
 	images?: Express.Multer.File[];
 
-	constructor(input: Partial<ICreatePlantDTOInput>) {
-		super(input);
+	constructor(input: ICreatePlantDTOInput) {
+		super();
+		this.popular_name = input.popular_name;
+		this.scientific_name = input.scientific_name;
+		this.additional_informations = input.additional_informations;
+		this.images = input.images;
 	}
 
-	static fromSerialized(input: Partial<ISerializedInput>) {
+	static fromSerialized(input: ISerializedInput) {
 		const additionalInformations = ((additionalInformations?: string) => {
 			if (!additionalInformations) return {};
 			try {
