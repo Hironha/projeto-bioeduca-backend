@@ -1,33 +1,43 @@
 {
 	"compilerOptions": {
-		"target": "ES5",
-		"lib": ["ES7", "DOM"],
+		"target": "ES2019",
+		"lib": ["ES2020", "DOM"],
 		"module": "CommonJS",
 		"rootDir": "./src",
-		"baseUrl": "./",
-		"resolveJsonModule": true,
-		"moduleResolution": "Node",
 		"allowUnreachableCode": false,
-		"allowJs": true,
-		"outDir": "./dist",
-		"removeComments": true,
-		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
 		"strict": true,
 		"strictPropertyInitialization": false,
 		"noImplicitAny": true,
-		"noUnusedLocals": true,
-		"skipLibCheck": true,
 		"isolatedModules": true,
+		"allowJs": true,
+		"moduleResolution": "node",
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"removeComments": true,
+		"resolveJsonModule": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"outDir": "dist",
+		"skipLibCheck": true,
+		"baseUrl": "./",
 		"paths": {
-			"@presentation/*": ["./src/1-presentation/*"],
-			"@domain/*": ["./src/2-domain/*"],
-			"@business/*": ["./src/3-business/*"],
-			"@data/*": ["./src/4-data/*"],
-			"@utils/*": ["./src/utils/*"]
+			"@presentation/*": ["src/1-presentation/*"],
+			"@domain/*": ["src/2-domain/*"],
+			"@business/*": ["src/3-business/*"],
+			"@data/*": ["src/4-data/*"],
+			"@utils/*": ["src/utils/*"]
 		}
 	},
-	"exclude": ["./dist/**/*", "./babel.config.js"]
+	"awesomeTypescriptLoaderOptions": {
+		"useWebpackText": true,
+		"useTranspileModule": true,
+		"doTypeCheck": true,
+		"forkChecker": true
+	},
+
+	"include": ["./src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
 }
