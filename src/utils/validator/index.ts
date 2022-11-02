@@ -1,14 +1,6 @@
-import {
-	validateOrReject,
-	ValidationError,
-	ValidatorOptions,
-} from "class-validator";
+import { validateOrReject, ValidationError, ValidatorOptions } from "class-validator";
 
-export abstract class Validator<T> {
-	constructor(object: Partial<T>) {
-		Object.assign(this, object);
-	}
-
+export abstract class Validator {
 	public async validate(options?: ValidatorOptions) {
 		try {
 			await validateOrReject(this, options);

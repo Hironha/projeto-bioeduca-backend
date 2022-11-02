@@ -15,10 +15,7 @@ interface ISerializedInput
 	delete_images: string;
 }
 
-export class UpdatePlantDTO
-	extends Validator<IUpdatePlantDTOInput>
-	implements IUpdatePlantDTOInput
-{
+export class UpdatePlantDTO extends Validator implements IUpdatePlantDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	id: string;
@@ -42,11 +39,17 @@ export class UpdatePlantDTO
 	@ImageArray({ maxCount: 5, mime: ["image/jpeg", "image/jpg", "image/png"] })
 	images?: Express.Multer.File[];
 
-	constructor(input: Partial<IUpdatePlantDTOInput>) {
-		super(input);
+	constructor(input: IUpdatePlantDTOInput) {
+		super();
+		this.id = input.id;
+		this.popular_name = input.popular_name;
+		this.scientific_name = input.scientific_name;
+		this.additional_informations = input.additional_informations;
+		this.delete_images = input.delete_images ?? [];
+		this.images = input.images;
 	}
 
-	static fromSerialized(input: Partial<ISerializedInput>) {
+	static fromSerialized(input: ISerializedInput) {
 		const additionalInformations = ((additionalInformations?: string) => {
 			if (!additionalInformations) return {};
 			try {
@@ -59,7 +62,7 @@ export class UpdatePlantDTO
 		const deleteImages = ((deleteImages?: string): string[] => {
 			try {
 				const parsedDeleteImages = JSON.parse(deleteImages ?? "");
-				return Array.isArray(parsedDeleteImages) ? parsedDeleteImages : []
+				return Array.isArray(parsedDeleteImages) ? parsedDeleteImages : [];
 			} catch (err) {
 				return [];
 			}

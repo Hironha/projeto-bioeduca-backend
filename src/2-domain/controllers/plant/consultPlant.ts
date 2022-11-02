@@ -6,18 +6,17 @@ import { ConsultPlantUseCase } from "@business/useCases/plant/consultPlant";
 
 import type { ParsedQs } from "qs";
 import type { Request, Response } from "express";
-import type { ParamsDictionary } from "express-serve-static-core";
 
 export class ConsultPlantController implements Controller {
 	constructor(private consultPlantUseCase = new ConsultPlantUseCase()) {}
 
 	public async handleRequest(
-		req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
-		res: Response<any, Record<string, any>>,
+		req: Request<{ plantId: string }, any, any, ParsedQs, Record<string, any>>,
+		res: Response<any, Record<string, any>>
 	): Promise<void> {
 		try {
 			const input = req.params;
-			const dto = new ConsultPlantDTO(input);
+			const dto = new ConsultPlantDTO({ plantId: input.plantId });
 			const plant = await this.consultPlantUseCase.exec(dto);
 			res.status(200).json(plant);
 		} catch (err) {
