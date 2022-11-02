@@ -8,10 +8,7 @@ import {
 	type IListPlantsPreviewDTOOutput,
 } from "@business/interfaces/ios/plant/listPlantsPreview";
 
-export class ListPlantsPreviewDTO
-	extends Validator<IListPlantsPreviewDTOInput>
-	implements IListPlantsPreviewDTOInput
-{
+export class ListPlantsPreviewDTO extends Validator implements IListPlantsPreviewDTOInput {
 	@IsOptional()
 	@IsString()
 	lastKey?: string;
@@ -21,8 +18,10 @@ export class ListPlantsPreviewDTO
 	@NumberString({ isInteger: true, min: 1, max: 20 })
 	perPage: string;
 
-	constructor(input: Partial<IListPlantsPreviewDTOInput>) {
-		super(input);
+	constructor(input: IListPlantsPreviewDTOInput) {
+		super();
+		this.lastKey = input.lastKey;
+		this.perPage = input.perPage;
 	}
 
 	export(): IListPlantsPreviewDTOOutput {

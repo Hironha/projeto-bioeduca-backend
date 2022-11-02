@@ -7,7 +7,7 @@ import {
 } from "@business/interfaces/ios/plantInformation/createPlantInformation";
 
 export class CreatePlantInformationDTO
-	extends Validator<ICreatePlantInformationDTOInput>
+	extends Validator
 	implements ICreatePlantInformationDTOInput
 {
 	@IsString()
@@ -19,7 +19,9 @@ export class CreatePlantInformationDTO
 	description: string;
 
 	constructor(input: ICreatePlantInformationDTOInput) {
-		super(input);
+		super();
+		this.field_name = input.field_name;
+		this.description = input.description;
 	}
 
 	export(): ICreatePlantInformationDTOOutput {

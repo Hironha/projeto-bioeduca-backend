@@ -6,10 +6,7 @@ import {
 	type IEditPlantInformationDTOOutput,
 } from "@business/interfaces/ios/plantInformation/editPlantInformation";
 
-export class EditPlantInformationDTO
-	extends Validator<IEditPlantInformationDTOInput>
-	implements IEditPlantInformationDTOInput
-{
+export class EditPlantInformationDTO extends Validator implements IEditPlantInformationDTOInput {
 	@IsNotEmpty()
 	@IsString()
 	id: string;
@@ -19,7 +16,9 @@ export class EditPlantInformationDTO
 	description: string;
 
 	constructor(input: IEditPlantInformationDTOInput) {
-		super(input);
+		super();
+		this.id = input.id;
+		this.description = input.description;
 	}
 
 	export(): IEditPlantInformationDTOOutput {

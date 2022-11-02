@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { handleRequest } from "@utils/controller";
+import { configureRouter, type Route } from "@utils/route";
 
 import { authenticationMiddleware } from "@domain/middlewares/authentication";
 
@@ -17,10 +17,11 @@ export const plantBaseURL = "/plants";
 export const usePlantsRouter = () => {
 	const router = Router({ caseSensitive: true });
 
-	const routes = {
+	const routes: Record<string, Route> = {
 		create: {
 			method: "POST",
 			path: plantBaseURL,
+			middlewares: [createFilesParser("images"), authenticationMiddleware],
 			controller: new CreatePlantController(),
 		},
 		list: {
@@ -36,11 +37,13 @@ export const usePlantsRouter = () => {
 		delete: {
 			method: "DELETE",
 			path: `${plantBaseURL}/:plantId`,
+			middlewares: [authenticationMiddleware],
 			controller: new DeletePlantController(),
 		},
 		update: {
-			method: "UPDATE",
+			method: "PUT",
 			path: `${plantBaseURL}/:plantId`,
+			middlewares: [createFilesParser("images"), authenticationMiddleware],
 			controller: new UpdatePlantController(),
 		},
 		consult: {
@@ -50,29 +53,7 @@ export const usePlantsRouter = () => {
 		},
 	};
 
-	router.post(
-		routes.create.path,
-		createFilesParser("images"),
-		authenticationMiddleware,
-		handleRequest(routes.create.controller)
-	);
-
-	router.put(
-		routes.update.path,
-		createFilesParser("images"),
-		authenticationMiddleware,
-		handleRequest(routes.update.controller)
-	);
-
-	router.delete(
-		routes.delete.path,
-		authenticationMiddleware,
-		handleRequest(routes.delete.controller)
-	);
-
-	router.get(routes.list.path, handleRequest(routes.list.controller));
-	router.get(routes.listPreview.path, handleRequest(routes.listPreview.controller));
-	router.get(routes.consult.path, handleRequest(routes.consult.controller));
+	configureRouter(router, routes);
 
 	return router;
 };
