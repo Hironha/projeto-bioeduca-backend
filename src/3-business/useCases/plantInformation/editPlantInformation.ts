@@ -19,9 +19,9 @@ export class EditPlantInformationUseCase
 
 	async exec(dto: EditPlantInformationDTO): Promise<IPlantInformationModel> {
 		try {
-			const createEditFlow = await this.createEntity(dto);
-			if (createEditFlow.isLeft()) throw createEditFlow.export();
-			const { id, ...editData } = createEditFlow.export();
+			const validateResult = await this.validateDTO(dto);
+			if (validateResult.isLeft()) throw validateResult.export();
+			const { id, ...editData } = validateResult.export();
 
 			const editPlantInformationFlow = await this.editPlantInformation(id, editData);
 			if (editPlantInformationFlow.isLeft()) throw editPlantInformationFlow.export();
@@ -34,7 +34,7 @@ export class EditPlantInformationUseCase
 		}
 	}
 
-	private async createEntity(
+	private async validateDTO(
 		dto: EditPlantInformationDTO
 	): Promise<Either<Exception, IEditPlantInformationDTOOutput>> {
 		try {
