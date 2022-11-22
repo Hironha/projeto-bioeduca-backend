@@ -15,7 +15,7 @@ export class UpdatePlantInformationMethod {
 		const currentSnapshot = await docRef.get();
 		if (!currentSnapshot.exists) throw { code: "not-exists" };
 
-		await docRef.set({ ...editData });
+		await docRef.update({ ...editData });
 		const editedSnapshot = await docRef.get();
 		const editedSnapshoData = editedSnapshot.data();
 		if (!editedSnapshoData) throw { code: "not-exists" };
