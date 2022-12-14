@@ -19,7 +19,11 @@ app.use(express.urlencoded({ extended: true }));
 const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 const hostname: string = process.env.HOSTNAME ?? "localhost";
 
-const baseUrl = `${hostname}:${port}`;
+const baseUrl = (() => {
+	const url = `${hostname}:${port}`;
+	const suffix = process.env.BASE_URL_SUFFIX;
+	return suffix ? `${url}${suffix}` : url;
+})();
 
 const routers: Router[] = [usePlantsRouter(), usePlantInformationRouter(), useUserRouter()];
 
