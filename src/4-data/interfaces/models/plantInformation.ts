@@ -1,5 +1,6 @@
 export interface IPlantInformationModel {
 	id: string;
+	order: number;
 	field_name: string;
 	description: string;
 	updated_at: number;

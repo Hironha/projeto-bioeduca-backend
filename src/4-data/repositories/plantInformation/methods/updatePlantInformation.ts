@@ -13,12 +13,15 @@ export class UpdatePlantInformationMethod {
 	): Promise<PlantInformationModel> {
 		const docRef = db.collection(this.collectionName).doc(id);
 		const currentSnapshot = await docRef.get();
+
 		if (!currentSnapshot.exists) throw { code: "not-exists" };
 
 		await docRef.update({ ...editData });
 		const editedSnapshot = await docRef.get();
 		const editedSnapshoData = editedSnapshot.data();
+
 		if (!editedSnapshoData) throw { code: "not-exists" };
+
 		const storedPlantInformation = editedSnapshoData as IStoredPlantInformationModel;
 		return new PlantInformationModel({ ...storedPlantInformation, id: docRef.id });
 	}
