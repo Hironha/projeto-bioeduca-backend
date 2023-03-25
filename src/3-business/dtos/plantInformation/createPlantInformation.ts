@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
 import {
@@ -18,8 +18,13 @@ export class CreatePlantInformationDTO
 	@IsNotEmpty()
 	description: string;
 
+	@IsNumber()
+	@IsNotEmpty()
+	order: number;
+
 	constructor(input: ICreatePlantInformationDTOInput) {
 		super();
+		this.order = input.order;
 		this.field_name = input.field_name;
 		this.description = input.description;
 	}
@@ -30,7 +35,7 @@ export class CreatePlantInformationDTO
 		return {
 			field_name: this.field_name.trim(),
 			description: this.description.trim(),
-
+			order: this.order,
 			created_at: currTimestamp,
 			updated_at: currTimestamp,
 		};

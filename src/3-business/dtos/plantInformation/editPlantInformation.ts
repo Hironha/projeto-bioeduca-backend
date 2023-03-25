@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Validator } from "@utils/validator";
 
 import {
@@ -13,11 +13,16 @@ export class EditPlantInformationDTO extends Validator implements IEditPlantInfo
 
 	@IsString()
 	@IsNotEmpty()
-	description: string;
+	description?: string;
+
+	@IsNumber()
+	@IsOptional()
+	order?: number;
 
 	constructor(input: IEditPlantInformationDTOInput) {
 		super();
 		this.id = input.id;
+		this.order = input.order;
 		this.description = input.description;
 	}
 
@@ -26,7 +31,8 @@ export class EditPlantInformationDTO extends Validator implements IEditPlantInfo
 
 		return {
 			id: this.id,
-			description: this.description.trim(),
+			order: this.order,
+			description: this.description?.trim(),
 			updated_at: currTimestamp,
 		};
 	}
