@@ -1,34 +1,39 @@
 {
-	"assumptions": {
+  "assumptions": {
     "setPublicClassFields": true,
     "privateFieldsAsProperties": true
-	},
-	"presets": [
-		[
-			"@babel/preset-env",
-			{
-				"targets": {
-					"node": "current"
-				}
-			}
-		],
-		"@babel/preset-typescript"
-	],
-	"plugins": [
-		[
-			"module-resolver",
-			{
-				"alias": {
-					"@presentation": "./src/1-presentation",
-					"@domain": "./src/2-domain",
-					"@business": "./src/3-business",
-					"@data": "./src/4-data",
-					"@utils": "./src/utils"
-				}
-			}
-		],
-		["@babel/plugin-proposal-decorators", { "version": "legacy" }],
-		["@babel/plugin-proposal-class-properties"]
-	],
-	"ignore": ["**/*.spec.ts"]
+  },
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ],
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "@presentation": "./src/1-presentation",
+          "@domain": "./src/2-domain",
+          "@business": "./src/3-business",
+          "@data": "./src/4-data",
+          "@utils": "./src/utils",
+          "@core/*": "./src/core",
+          "@plant/*": "./src/plant",
+          "@info/*": "./src/info",
+          "@users/*": "./src/users",
+          "@auth/*": "./src/auth"
+        }
+      }
+    ],
+    ["@babel/plugin-proposal-decorators", { "version": "legacy" }],
+    ["@babel/plugin-proposal-class-properties"]
+  ],
+  "ignore": ["**/*.spec.ts"]
 }

@@ -1,12 +1,11 @@
 import * as dotenv from "dotenv";
-import express, { type Router } from "express";
+import express, { Router } from "express";
 import helmet from "helmet";
 import cors from "cors";
 
-import { getAvailableRoutes } from "@utils/routes";
-import { usePlantsRouter } from "@presentation/routers/plants";
-import { usePlantInformationRouter } from "@presentation/routers/plantInformation";
-import { useUserRouter } from "@presentation/routers/user";
+import * as InfoRoutes from "./info/routes";
+import * as PlantRoutes from "./plant/routes";
+import * as UserRoutes from "./user/routes";
 
 dotenv.config();
 const app = express();
@@ -18,20 +17,29 @@ app.use(express.urlencoded({ extended: true }));
 
 const port = process.env.PORT ? parseInt(process.env.PORT) : 4000;
 const hostname: string = process.env.HOSTNAME ?? "localhost";
+const host = `${hostname}:${port}`;
+const baseUrl = process.env.BASE_URL_SUFFIX ? `${host}${process.env.BASE_URL_SUFFIX}` : host;
 
-const baseUrl = (() => {
-	const url = `${hostname}:${port}`;
-	const suffix = process.env.BASE_URL_SUFFIX;
-	return suffix ? `${url}${suffix}` : url;
-})();
-
-const routers: Router[] = [usePlantsRouter(), usePlantInformationRouter(), useUserRouter()];
+const routers = [InfoRoutes.createRouter(), PlantRoutes.createRouter(), UserRoutes.createRouter()];
 
 routers.forEach((router) => {
-	app.use(router);
-	console.log(getAvailableRoutes(router, baseUrl));
+  app.use(router);
+  logRoutes(router);
 });
 
 app.listen(port, hostname, () => {
-	console.log(`Server started on port ${port}`);
+  console.log(`Server started on port ${port}`);
 });
+
+function logRoutes(router: Router): void {
+  const routes = router.stack.map((stack) => stack.route);
+  for (const route of routes) {
+    if (!route.methods) {
+      continue;
+    }
+
+    const endpoint = baseUrl.concat(route.path);
+    const method = Object.keys(route.methods).at(0)?.toUpperCase();
+    console.debug({ endpoint, method });
+  }
+}
